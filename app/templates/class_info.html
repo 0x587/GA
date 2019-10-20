@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    ClassInfo
+{% endblock %}
+{% block app_content %}
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="jumbotron">
+                    <h1>
+                        {{ class_index }}
+                    </h1>
+                    <p>
+                        Something README
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-md-4 column">
+                <table class="table table-hover table-striped">
+                    <tbody>
+                    <tr class="success">
+                        <td>Class</td>
+                        <td>{{ class_index }}</td>
+                    </tr>
+                    <tr class="info">
+                        <td>Count of students</td>
+                        <td>{{ student_count }}</td>
+                    </tr>
+                    <tr class="warning">
+                        <td>Last update time</td>
+                        <td>{{ update_time }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-8 column">
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,4 +1,4 @@
-from NewLoadData.DataModels import *
+from LoadData.DataModels import *
 
 
 class AnalysisStudent(db.Model):

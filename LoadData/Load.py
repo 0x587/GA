@@ -2,7 +2,7 @@ from app.models import Class, Student, Test, Grade
 from app import db
 import re
 import os
-from NewLoadData.LoadFile import load_file
+from LoadData.LoadFile import load_file
 
 
 def sort_total_ranking():

@@ -1,5 +1,5 @@
 import os
-from LoadFile import load_file
+from LoadData.LoadFile import load_file
 from app.models import *
 import re
 

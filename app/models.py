@@ -9,15 +9,13 @@ class Student(db.Model):
     class_index = db.Column(db.Integer)
 
     def __repr__(self):
-        late_test = db.session.query(Grade).filter_by(StudentName=self.student_name).ordey_by(
+        lats_test = db.session.query(Grade).filter_by(StudentName=self.student_name).order_by(
             Grade.TestTime.desc()
         ).first()
         return (
                 '/***************************************' + '\n' +
-                ('student_name: %s' % self.student_name) + '\n' +
-                ('test_id: %s' % self.test_id) + '\n' +
-                ('class_index: %s' % self.class_index) + '\n' +
-                # ('StudentGrade: %s' % self.StudentGrade)
+                ('student_name: %s' % lats_test.StudentName) + '\n' +
+                ('class_index: %s' % lats_test.class_index) + '\n' +
                 '***************************************/' + '\n'
         )
 
@@ -73,3 +71,14 @@ class Test(db.Model):
 
     test_time = db.Column(db.Integer, primary_key=True)
     test_name = db.Column(db.String(20))
+
+
+class AnalysisStudent(db.Model):
+    __tablename__ = 'analysis_students'
+
+    ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    # level:
+    #     high: first 25%
+    #     medium : top 25%-60%
+    #     low : last 40%
+    level = db.Column(db.String(8))

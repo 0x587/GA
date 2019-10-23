@@ -1,26 +1,27 @@
+from app.models import Class, Student, Test, Grade
+from app import db
+import re
 import os
 from LoadData.LoadFile import load_file
-from app.models import *
-import re
 
 
 def sort_total_ranking():
     for test in Test.query.all():
         for subject in ['文科', '理科']:
             infos = []
-            grades = Grade.query.filter_by(TestTime=test.test_time,
-                                           Subject=subject).order_by(Grade.Total.desc()).all()
+            grades = Grade.query.filter_by(test_time=test.test_time,
+                                           subject=subject).order_by(Grade.total.desc()).all()
             for i, g in enumerate(grades):
-                infos.append({'index': i + 1, 'total': g.Total, 'grade': g})
+                infos.append({'index': i + 1, 'total': g.total, 'grade': g})
             for index, info in enumerate(infos):
                 if info['total'] == infos[index - 1]['total']:
                     info['index'] = infos[index - 1]['index']
             for info in infos:
-                info['grade'].TotalRanking = info['index']
+                info['grade'].total_ranking = info['index']
             db.session.commit()
 
 
-path = os.getcwd() + '/DataFile'
+path = '../DataFile'
 files = []
 for root, _, filename in os.walk(path):
     for name in filename:

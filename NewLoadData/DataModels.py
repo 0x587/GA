@@ -13,7 +13,9 @@ class Class(db.Model):
 class Student(db.Model):
     __tablename__ = "students"
 
-    student_name = db.Column(db.String(8), primary_key=True)
+    ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    student_name = db.Column(db.String(8))
+    test_id = db.Column(db.Integer)
     class_index = db.Column(db.ForeignKey('classes.index'))
     class_ = db.relationship('Class', backref='students')
 
@@ -38,7 +40,7 @@ class Grade(db.Model):
 
     class_index = db.Column(db.Integer)
 
-    student_name = db.Column(db.String(8), db.ForeignKey('students.student_name'))
+    student_ID = db.Column(db.Integer, db.ForeignKey('students.ID'))
     student = db.relationship('Student', backref='grades')
 
     subject = db.Column(db.String(2))

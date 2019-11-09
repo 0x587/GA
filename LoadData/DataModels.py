@@ -69,9 +69,16 @@ class Grade(db.Model):
     total = db.Column(db.Float)
     total_ranking = db.Column(db.Integer)
 
+    def grade_dict(self):
+        return {'subject': self.subject,
+                'chinese': self.chinese, 'match': self.match, 'english': self.english,
+                'biology': self.biology, 'physics': self.physics, 'chemistry': self.chemistry,
+                'politics': self.politics, 'history': self.history, 'geography': self.geography,
+                'total': self.total, 'ID': self.student_ID}
+
     def __repr__(self):
         back1 = '语文:%s 数学:%s 英语:%s ' % (str(self.chinese), str(self.match), str(self.english))
-        if self.subject == '文' or '文科':
+        if self.subject == '文科':
             back2 = '政治:%s 历史:%s 地理:%s ' % (str(self.politics), str(self.history), str(self.geography))
         else:
             back2 = '物理:%s 化学:%s 生物:%s ' % (str(self.physics), str(self.chemistry), str(self.biology))

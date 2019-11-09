@@ -1,4 +1,3 @@
-from pyecharts.faker import Faker
 from pyecharts.charts import Line, Funnel
 from pyecharts import options as opts
 from pyecharts.globals import ThemeType
@@ -6,11 +5,10 @@ from app.models import *
 
 
 # TODO 参数传递
-def personal_history_grade() -> Line:
-    key = Faker.choose()
-    values = Faker.values()
-    if len(key) != len(values):
-        raise Warning('Keys do not match the length of values')
+def personal_history_grade(student: Student) -> Line:
+    s = student
+    key = [t.test_name for t in Test.query.all()]
+    values = [g.total_ranking for g in s.grades]
     current_data: list = values.copy()
     current_data[-1] = None
     current_line = (Line(init_opts=opts.InitOpts(theme=ThemeType.WONDERLAND))
@@ -18,9 +16,9 @@ def personal_history_grade() -> Line:
                     .add_yaxis('A', current_data, is_smooth=True, is_connect_nones=True,
                                # label_opts=opts.LabelOpts(is_show=False),
                                markpoint_opts=opts.MarkPointOpts(
-                                   data=[opts.MarkPointItem(symbol=r'image://app/static/top.png',
+                                   data=[opts.MarkPointItem(symbol=r'image:///static/top.png',
                                                             symbol_size=60, type_='max'),
-                                         opts.MarkPointItem(symbol=r'image://app/static/low.png',
+                                         opts.MarkPointItem(symbol=r'image:///static/low.png',
                                                             symbol_size=40, type_='min')]
                                )))
     future_data: list = [None for _ in range(len(values))]
@@ -49,10 +47,7 @@ def class_grade_distributed(class_index: int) -> Funnel:
     c = (
         Funnel()
             .add('level', [list(z) for z in zip(data.keys(), data.values())],
-                 sort_="none", gap=5,label_opts=opts.LabelOpts())
+                 sort_="none", gap=5, label_opts=opts.LabelOpts())
             .set_global_opts(title_opts=opts.TitleOpts('level分布'))
     )
     return c
-
-
-class_grade_distributed(1809.render()

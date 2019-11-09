@@ -14,6 +14,11 @@ def newest_data():
         Test.query.filter_by(test_time=int(lats_test_time)).first().test_name)
 
 
+def newest_data_no_date():
+    lats_test_time = str(db.session.query(db.func.max(Test.test_time)).scalar())
+    return str(Test.query.filter_by(test_time=int(lats_test_time)).first().test_name)
+
+
 def now_student(class_index: int) -> list:
     lats_test_time = str(db.session.query(db.func.max(Test.test_time)).scalar())
     grades = db.session.query(Grade).filter_by(test_time=lats_test_time,

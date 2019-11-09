@@ -18,25 +18,88 @@
             </div>
         </div>
         <div class="row clearfix">
-            <div class="col-md-4 column">
-                <table class="table table-hover table-striped">
-                    <tbody>
-                    <tr class="success">
-                        <td>Class</td>
-                        <td>{{ class_index }}</td>
-                    </tr>
-                    <tr class="info">
-                        <td>Count of students</td>
-                        <td>{{ student_count }}</td>
-                    </tr>
-                    <tr class="warning">
-                        <td>Last update time</td>
-                        <td>{{ update_time }}</td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div class="col-md-10 column">
+                <div class="row clearfix">
+                    <div class="col-md-4 column">
+                        <blockquote>
+                            <p>
+                                Class infos
+                            </p>
+                        </blockquote>
+                        <table class="table table-hover table-striped">
+                            <tbody>
+                            {% for class_info in class_infos %}
+                                <tr class="{{ ['success','info','warning']|random() }}">
+                                    <td>{{ class_info }}</td>
+                                    <td>{{ class_infos[class_info] }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-8 column">
+                        <blockquote>
+                            <p>
+                                Class grade distributed
+                            </p>
+                        </blockquote>
+                        {{ distributed|safe }}
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-md-1 column"></div>
+                    <div class="col-md-10 column">
+                        
+                    </div>
+                    <div class="col-md-1 column"></div>
+                </div>
             </div>
-            <div class="col-md-8 column">
+            <div class="col-md-2 column">
+                <blockquote>
+                    <p>
+                        Students list
+                    </p>
+                </blockquote>
+                <div class="panel-group" id="panel-382092">
+                    {% for student in students %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-382092"
+                                   href=#panel-element-{{ student.index }}>{{ student.name }}</a>
+                            </div>
+                            <div id="panel-element-{{ student.index }}" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    {% for detail in student.details %}
+                                        {{ detail.key }}:{{ detail.value }}<br>
+                                    {% endfor %}
+                                    <a id="modal-{{ student.index }}" href="#modal-container-{{ student.index }}"
+                                       data-toggle="modal">detail</a>
+                                    <div class="modal fade" id="modal-container-{{ student.index }}" role="dialog"
+                                         aria-labelledby="myModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-hidden="true">×
+                                                    </button>
+                                                    <h4 class="modal-title" id="myModalLabel">{{ student.name }}</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    {#TODO：人员流动记录#}
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" data-dismiss="modal" class="btn btn-primary">
+                                                        Close
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>

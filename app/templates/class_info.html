@@ -74,7 +74,7 @@
                                     {% for detail in student.details %}
                                         {{ detail.key }}:{{ detail.value }}<br>
                                     {% endfor %}
-                                    <a id="modal-{{ student.index }}" href="#modal-container-{{ student.index }}"
+                                    <a id="modal-{{ student.index }}" href=#modal-container-{{ student.index }}
                                        data-toggle="modal">detail</a>
                                     <div class="modal fade" id="modal-container-{{ student.index }}" role="dialog"
                                          aria-labelledby="myModalLabel" aria-hidden="true">
@@ -88,6 +88,7 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     {#TODO：人员流动记录#}
+                                                    <a href=/student_info/{{ student.ID }}>Detail</a>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" data-dismiss="modal" class="btn btn-primary">

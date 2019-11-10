@@ -22,7 +22,7 @@ def class_info(class_index):
         details = ({'key': 'Grade level', 'value': s[1].analysis[0].get_level().title()},
                    {'key': 'Key', 'value': 'Value'})
         student_infos.append({'index': s[0], 'name': s[1], 'details': details,
-                              'full_detail': None})
+                              'full_detail': None, 'ID': s[1].ID})
     distributed_chart, distributed_data = class_grade_distributed(class_index)
     if distributed_data['top'] > 10:
         top_level = '较多'
@@ -37,3 +37,13 @@ def class_info(class_index):
                            distributed=distributed_chart.render_embed(),
                            distributed_analysis=analysis,
                            students=student_infos, )
+
+
+@app.route('/student_info/<int:student_id>')
+def student_info(student_id):
+    student = Student.query.filter_by(ID=student_id).first()
+    return render_template('student_info.html',
+                           infos=[
+                               {'key': 'Name', 'value': student.student_name},
+                               {'key': 'ClassIndex', 'value': student.class_index}
+                           ])

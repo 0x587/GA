@@ -10,7 +10,7 @@ def class_grade_distributed(class_index: int) -> Funnel:
     for student in students:
         data[student.analysis[0].get_level()] += 1
     chart = (
-        Funnel(init_opts=opts.InitOpts(width='100%', height='400px',theme=ThemeType.VINTAGE))
+        Funnel(init_opts=opts.InitOpts(width='100%', height='400px', theme=ThemeType.VINTAGE))
             .add('level', [list(z) for z in zip(data.keys(), data.values())],
                  sort_="none", gap=5, label_opts=opts.LabelOpts())
     )

@@ -4,7 +4,7 @@ from app.models import *
 from pyecharts.globals import ThemeType
 
 
-def class_grade_distributed(class_index: int) -> Funnel:
+def class_grade_distributed(class_index: int) -> (Funnel, dict):
     students: list = Student.query.filter_by(class_index=class_index)
     data = {'top': 0, 'high': 0, 'medium': 0, 'low': 0, }
     for student in students:
@@ -14,7 +14,7 @@ def class_grade_distributed(class_index: int) -> Funnel:
             .add('level', [list(z) for z in zip(data.keys(), data.values())],
                  sort_="none", gap=5, label_opts=opts.LabelOpts())
     )
-    return chart
+    return chart, data
 
 
 def class_type(class_index: int) -> str:

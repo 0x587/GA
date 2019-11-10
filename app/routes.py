@@ -23,8 +23,17 @@ def class_info(class_index):
                    {'key': 'Key', 'value': 'Value'})
         student_infos.append({'index': s[0], 'name': s[1], 'details': details,
                               'full_detail': None})
+    distributed_chart, distributed_data = class_grade_distributed(class_index)
+    if distributed_data['top'] > 10:
+        top_level = '较多'
+    else:
+        top_level = '处于平均水平'
+    analysis = '该班成绩主要集中在{level}水平<br>顶尖同学数量{top_level}'.format(
+        level=max(distributed_data, key=distributed_data.get), top_level=top_level)
+
     return render_template('class_info.html',
                            history_chart=class_history_grade(class_index).render_embed(),
                            class_infos=class_infos,
-                           distributed=class_grade_distributed(class_index).render_embed(),
+                           distributed=distributed_chart.render_embed(),
+                           distributed_analysis=analysis,
                            students=student_infos, )

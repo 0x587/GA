@@ -38,6 +38,7 @@ def class_history_grade(class_index: int) -> Timeline:
         ranking_max = 3
     # TODO  文科班主科分开排序
     tl = Timeline(init_opts=opts.InitOpts(theme=ThemeType.VINTAGE))
+    tl.add_schema(is_auto_play=True,play_interval=1500)
     for test in Test.query.all():
         cag: ClassAverageGrade = ClassAverageGrade.query.filter(
             ClassAverageGrade.test_time == test.test_time,

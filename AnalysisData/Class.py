@@ -51,3 +51,15 @@ def class_highest_ranking(class_index: int):
     data = {g.test_time: g.total_ranking for g in average_grade}
     best_grade_time = min(data, key=data.get)
     return best_grade_time, data[best_grade_time]
+
+
+def class_best_subject(class_index: int) -> list:
+    average_grades = ClassAverageGrade.query.filter_by(class_index=class_index).all()
+    subject_list = [g.limit_subject('best') for g in average_grades]
+    return max(subject_list, key=subject_list.count)
+
+
+def class_worse_subject(class_index: int) -> list:
+    average_grades = ClassAverageGrade.query.filter_by(class_index=class_index).all()
+    subject_list = [g.limit_subject('worse') for g in average_grades]
+    return max(subject_list, key=subject_list.count)

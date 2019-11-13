@@ -2,7 +2,8 @@ from app import app
 from flask import render_template, request
 from class_info import *
 from AnalysisData.Class import class_grade_distributed, class_type, \
-    class_history_grade, class_highest_ranking
+    class_history_grade, class_highest_ranking, \
+    class_best_subject, class_worse_subject
 from AnalysisData.Student import personal_history_grade
 
 
@@ -20,7 +21,8 @@ def class_info(class_index):
                    'last update time': newest_data_no_date(),
                    'historical highest ranking': best_ranking,
                    'historical best test': Test.query.filter_by(test_time=best_time).first().test_name,
-                   'best subject': '',
+                   'best subject': class_best_subject(class_index),
+                   'worse subject': class_worse_subject(class_index),
                    }
     student_infos = []
     for s in enumerate(Class.query.filter_by(index=class_index).first().students):

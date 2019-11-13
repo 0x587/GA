@@ -61,3 +61,21 @@ class ClassAverageGrade(db.Model):
 
     def __init__(self, class_index: int):
         self.class_ = Class.query.filter_by(index=class_index).first()
+
+    def limit_subject(self, limit_type='best'):
+        if self.subject == '文科':
+            dic = {'chinese': self.chinese_ranking, 'match': self.match_ranking, 'english': self.english_ranking,
+                   'politics': self.politics_ranking, 'history': self.history_ranking,
+                   'geography': self.geography_ranking,
+                   }
+        else:
+            dic = {'chinese': self.chinese_ranking, 'match': self.match_ranking, 'english': self.english_ranking,
+                   'biology': self.biology_ranking, 'physics': self.physics_ranking,
+                   'chemistry': self.chemistry_ranking,
+                   }
+        if limit_type == 'best':
+            return min(dic, key=dic.get)
+        elif limit_type == 'worse':
+            return max(dic, key=dic.get)
+        else:
+            raise Warning('limit type is unlawful')

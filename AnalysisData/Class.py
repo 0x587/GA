@@ -24,7 +24,19 @@ def class_type(class_index: int) -> str:
         return 'Ordinary class'
 
 
+def class_subject(class_index: int) -> str:
+    if class_index in [1818, 1819, 1820]:
+        return '文科'
+    else:
+        return '理科'
+
+
 def class_history_grade(class_index: int) -> Timeline:
+    if class_subject(class_index) == '理科':
+        ranking_max = 16
+    else:
+        ranking_max = 3
+    # TODO  文科班主科分开排序
     tl = Timeline(init_opts=opts.InitOpts(theme=ThemeType.VINTAGE))
     for test in Test.query.all():
         cag: ClassAverageGrade = ClassAverageGrade.query.filter(
@@ -35,14 +47,34 @@ def class_history_grade(class_index: int) -> Timeline:
                   cag.physics, cag.chemistry, cag.biology, ]
         rankings = [cag.chinese_ranking, cag.match_ranking, cag.english_ranking,
                     cag.physics_ranking, cag.chemistry_ranking, cag.biology_ranking, ]
-        bar = (
+        grade_bar = (
             Bar(init_opts=opts.InitOpts(theme=ThemeType.VINTAGE))
                 .add_xaxis(['语文', '数学', '英语', '物理', '化学', '生物'])
                 .add_yaxis('Grade', grades)
-                .add_yaxis('Ranking', rankings)
-                .set_global_opts(title_opts=opts.TitleOpts(test.test_name))
+                .extend_axis(
+                yaxis=opts.AxisOpts(
+                    axislabel_opts=opts.LabelOpts(formatter="{value} 名"),
+                    min_=0, max_=ranking_max, interval=2,
+                    is_inverse=True,
+                )
+            )
+                .set_global_opts(
+                title_opts=opts.TitleOpts(title=test.test_name),
+                yaxis_opts=opts.AxisOpts(
+                    axislabel_opts=opts.LabelOpts(formatter="{value} 分"),
+                ),
+            )
         )
-        tl.add(bar, test.test_time)
+        ranking_bar = (
+            Bar(init_opts=opts.InitOpts(theme=ThemeType.VINTAGE))
+                .add_xaxis(['语文', '数学', '英语', '物理', '化学', '生物'])
+                .add_yaxis('Ranking', rankings, yaxis_index=1)
+                .set_global_opts(title_opts=opts.TitleOpts(test.test_name))
+                .set_global_opts(yaxis_opts=opts.AxisOpts(is_inverse=True))
+
+        )
+        grade_bar.overlap(ranking_bar)
+        tl.add(grade_bar, test.test_time)
     return tl
 
 

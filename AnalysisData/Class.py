@@ -44,3 +44,10 @@ def class_history_grade(class_index: int) -> Timeline:
         )
         tl.add(bar, test.test_time)
     return tl
+
+
+def historical_highest_ranking(class_index: int):
+    average_grade = ClassAverageGrade.query.filter_by(class_index=class_index).all()
+    data = {g.test_time: g.total_ranking for g in average_grade}
+    best_grade_time = min(data, key=data.get)
+    return best_grade_time, data[best_grade_time]

@@ -1,7 +1,8 @@
 from app import app
 from flask import render_template, request
 from class_info import *
-from AnalysisData.Class import class_grade_distributed, class_type, class_history_grade
+from AnalysisData.Class import class_grade_distributed, class_type, \
+    class_history_grade, historical_highest_ranking
 from AnalysisData.Student import personal_history_grade
 
 
@@ -12,10 +13,14 @@ def hello_world():
 
 @app.route('/class_info/<int:class_index>')
 def class_info(class_index):
+    best_time, best_ranking = historical_highest_ranking(class_index)
     class_infos = {'class index': class_index,
                    'class type': class_type(class_index),
                    'count of student': student_count(class_index),
                    'last update time': newest_data_no_date(),
+                   'historical highest ranking': best_ranking,
+                   'historical best test': Test.query.filter_by(test_time=best_time).first().test_name,
+                   'best subject': '',
                    }
     student_infos = []
     for s in enumerate(Class.query.filter_by(index=class_index).first().students):

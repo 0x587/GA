@@ -2,7 +2,7 @@ from app import app
 from flask import render_template, request
 from class_info import *
 from AnalysisData.Class import class_grade_distributed, class_type, \
-    class_history_grade, historical_highest_ranking
+    class_history_grade, class_highest_ranking
 from AnalysisData.Student import personal_history_grade
 
 
@@ -13,7 +13,7 @@ def hello_world():
 
 @app.route('/class_info/<int:class_index>')
 def class_info(class_index):
-    best_time, best_ranking = historical_highest_ranking(class_index)
+    best_time, best_ranking = class_highest_ranking(class_index)
     class_infos = {'class index': class_index,
                    'class type': class_type(class_index),
                    'count of student': student_count(class_index),

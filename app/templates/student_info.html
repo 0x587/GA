@@ -5,7 +5,7 @@
 {% endblock %}
 {% block app_content %}
     <div class="row clearfix">
-        <div class="col-md-4 column">
+        <div class="col-md-3 column">
             <div class="jumbotron">
                 <img src="/static/user.jpg" class="img-circle" width="100%">
                 <dl>
@@ -20,7 +20,7 @@
                 </dl>
             </div>
         </div>
-        <div class="col-md-8 column">
+        <div class="col-md-9 column">
             <div class="jumbotron">
                 <h1>
                     Hello, world!
@@ -33,6 +33,43 @@
                 <p>
                     <a class="btn btn-primary btn-large" href="#">Learn more</a>
                 </p>
+            </div>
+            <div class="jumbotron">
+            {{ grades }}
+                <div class="panel-group" id="panel-859781">
+                    {% for grade in grades %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a class="panel-title" data-toggle="collapse" data-parent="#panel-859781"
+                                   href="#panel-element-{{ grade.index }}">{{ grade.data[0] }}</a>
+                            </div>
+                            <div id="panel-element-{{ grade.index }}" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <div class="tabbable">
+                                        <ul class="nav nav-tabs">
+                                            {% for each_grade in grade.data[1] %}
+                                                <li class={{ 'active' if each_grade.is_show else '' }}>
+                                                    <a href="#panel-{{ each_grade.index }}"
+                                                       data-toggle="tab">{{ each_grade.test_name }}</a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                        <div class="tab-content">
+                                            {% for each_grade in grade.data[1] %}
+                                                <div class="tab-pane {{ 'active' if each_grade.is_show else '' }}"
+                                                     id="panel-{{ each_grade.index }}">
+                                                    <p>
+                                                        {{ each_grade.total }}
+                                                    </p>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>

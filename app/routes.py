@@ -49,8 +49,28 @@ def class_info(class_index):
 @app.route('/student_info/<int:student_id>')
 def student_info(student_id):
     student = Student.query.filter_by(ID=student_id).first()
+    grades = {}
+    grade_result = Grade.query.filter_by(student_ID=student_id).all()
+    for index, grade in enumerate(grade_result):
+        test_name = grade.test.test_name
+        grades[test_name[:2] + test_name[-3:]] = []
+    for index, grade in enumerate(grade_result):
+        test_name = grade.test.test_name
+        grades[test_name[:2] + test_name[-3:]].append({'is_show': False,
+                                                       'index': index,
+                                                       'test_name': grade.test.test_name[2:4],
+                                                       'total': grade.total})
+    for key, value in grades.items():
+        first_index = min([v['index'] for v in value])
+        for v in value:
+            if v['index'] == first_index:
+                v['is_show'] = True
+
     return render_template('student_info.html',
                            infos=[
                                {'key': 'Name', 'value': student.student_name},
                                {'key': 'ClassIndex', 'value': student.class_index}
-                           ])
+                           ],
+                           grades=[{'index': index,
+                                    'data': a} for index, a in enumerate(grades.items())],
+                           )

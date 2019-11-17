@@ -3,8 +3,8 @@ from app.models import *
 
 def student_count(class_index: int):
     lats_test_time = db.session.query(db.func.max(Test.test_time)).scalar()
-    return db.session.query(Grade).filter_by(test_time=lats_test_time,
-                                             class_index=class_index).count()
+    return db.session.query(StudentGrade).filter_by(test_time=lats_test_time,
+                                                    class_index=class_index).count()
 
 
 def newest_data():
@@ -21,13 +21,13 @@ def newest_data_no_date():
 
 def now_student(class_index: int) -> list:
     lats_test_time = str(db.session.query(db.func.max(Test.test_time)).scalar())
-    grades = db.session.query(Grade).filter_by(test_time=lats_test_time,
-                                               class_index=class_index).all()
+    grades = db.session.query(StudentGrade).filter_by(test_time=lats_test_time,
+                                                      class_index=class_index).all()
     return [s.ID for s in grades]
 
 
 def class_ranking(test_time: int) -> dict:
-    grades = db.session.query(Grade).filter_by(test_time=test_time).all()
+    grades = db.session.query(StudentGrade).filter_by(test_time=test_time).all()
     classes = {}
     for i in range(1801, 1818):
         classes[i] = 0

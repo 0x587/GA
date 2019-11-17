@@ -50,7 +50,7 @@ def class_info(class_index):
 def student_info(student_id):
     student = Student.query.filter_by(ID=student_id).first()
     grades = {}
-    grade_result = Grade.query.filter_by(student_ID=student_id).all()
+    grade_result = StudentGrade.query.filter_by(student_ID=student_id).all()
     for index, grade in enumerate(grade_result):
         test_name = grade.test.test_name
         grades[test_name[:2] + test_name[-3:]] = []

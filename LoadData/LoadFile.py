@@ -1,4 +1,4 @@
-from app.models import Class, Student, Test, Grade
+from app.models import Class, Student, Test, StudentGrade
 from app import db
 from time import time
 import xlrd
@@ -72,7 +72,7 @@ def load_grade(work_file: dict, workbook):
         worksheet = workbook.sheet_by_name(sheet_name)
         for index in range(1, worksheet.nrows):
             work_row = worksheet.row_values(index)
-            new_grade = Grade()
+            new_grade = StudentGrade()
             new_grade.test = current_test
             new_grade.student = db.session.query(Student).filter_by(
                 student_name=work_row[worksheet.row_values(0).index('姓名')]).first()

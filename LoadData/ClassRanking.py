@@ -5,7 +5,7 @@ def input_data():
     for test in Test.query.all():
         class_infos = {index: {'obj': ClassAverageGrade(index),
                                'grades': []} for index in range(1801, 1821)}
-        for grade in Grade.query.filter(Grade.test_time == test.test_time).all():
+        for grade in StudentGrade.query.filter(StudentGrade.test_time == test.test_time).all():
             class_infos[grade.class_index]['grades'].append(grade.grade_dict())
         for key, value in class_infos.items():
             try:

@@ -1,4 +1,4 @@
-from app.models import Class, Student, Test, Grade
+from app.models import Test, StudentGrade
 from app import db
 import re
 import os
@@ -9,8 +9,8 @@ def sort_total_ranking():
     for test in Test.query.all():
         for subject in ['文科', '理科']:
             infos = []
-            grades = Grade.query.filter_by(test_time=test.test_time,
-                                           subject=subject).order_by(Grade.total.desc()).all()
+            grades = StudentGrade.query.filter_by(test_time=test.test_time,
+                                                  subject=subject).order_by(StudentGrade.total.desc()).all()
             for i, g in enumerate(grades):
                 infos.append({'index': i + 1, 'total': g.total, 'grade': g})
             for index, info in enumerate(infos):

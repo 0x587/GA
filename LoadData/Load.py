@@ -3,6 +3,7 @@ from app import db
 import re
 import os
 from LoadData.LoadFile import load_file
+from LoadData.ClassRanking import sort_class_ranking
 
 
 def sort_total_ranking():
@@ -34,5 +35,7 @@ if __name__ == '__main__':
             fileInfo = {'Root': (file['Root'] + '/' + file['Name']).replace('\\', r'/'),
                         'Name': file['Name']}
             load_file(fileInfo)
-    print('Start sort ranking')
+    print('Start sort personal ranking')
     sort_total_ranking()
+    print('Start sort class ranking')
+    sort_class_ranking()

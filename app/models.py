@@ -110,6 +110,8 @@ class StudentGrade(GradeBase):
     student_ID = db.Column(db.Integer, db.ForeignKey('students.ID'))
     student = db.relationship('Student', backref='student_grades')
 
+    class_index = db.Column(db.Integer)
+
     def grade_dict(self):
         return {'subject': self.subject,
                 'chinese': self.chinese, 'match': self.match, 'english': self.english,

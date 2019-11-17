@@ -1,7 +1,8 @@
-from app.models import *
+from app import db
+from app.models import Test, StudentGrade, ClassAverageGrade
 
 
-def input_data():
+def sort_class_ranking():
     for test in Test.query.all():
         class_infos = {index: {'obj': ClassAverageGrade(index),
                                'grades': []} for index in range(1801, 1821)}
@@ -29,61 +30,59 @@ def input_data():
                 print(e)
         db.session.commit()
 
+    for test in Test.query.all():
+        for subject in ['文科', '理科']:
+            # Chinese
+            for i, g in enumerate(ClassAverageGrade.query.filter_by(
+                    test_time=test.test_time,
+                    subject=subject).order_by(ClassAverageGrade.chinese).all()):
+                g.chinese_ranking = 17 - i
+            # Match
+            for i, g in enumerate(ClassAverageGrade.query.filter_by(
+                    test_time=test.test_time,
+                    subject=subject).order_by(ClassAverageGrade.match).all()):
+                g.match_ranking = 17 - i
+            # English
+            for i, g in enumerate(ClassAverageGrade.query.filter_by(
+                    test_time=test.test_time,
+                    subject=subject).order_by(ClassAverageGrade.english).all()):
+                g.english_ranking = 17 - i
+            if subject == '理科':
+                # Physics
+                for i, g in enumerate(ClassAverageGrade.query.filter_by(
+                        test_time=test.test_time,
+                        subject=subject).order_by(ClassAverageGrade.physics).all()):
+                    g.physics_ranking = 17 - i
+                # Chemistry
+                for i, g in enumerate(ClassAverageGrade.query.filter_by(
+                        test_time=test.test_time,
+                        subject=subject).order_by(ClassAverageGrade.chemistry).all()):
+                    g.chemistry_ranking = 17 - i
+                # Biology
+                for i, g in enumerate(ClassAverageGrade.query.filter_by(
+                        test_time=test.test_time,
+                        subject=subject).order_by(ClassAverageGrade.biology).all()):
+                    g.biology_ranking = 17 - i
+            else:
+                # Politics
+                for i, g in enumerate(ClassAverageGrade.query.filter_by(
+                        test_time=test.test_time,
+                        subject=subject).order_by(ClassAverageGrade.politics).all()):
+                    g.politics_ranking = 17 - i
+                # History
+                for i, g in enumerate(ClassAverageGrade.query.filter_by(
+                        test_time=test.test_time,
+                        subject=subject).order_by(ClassAverageGrade.history).all()):
+                    g.history_ranking = 17 - i
+                # Geography
+                for i, g in enumerate(ClassAverageGrade.query.filter_by(
+                        test_time=test.test_time,
+                        subject=subject).order_by(ClassAverageGrade.geography).all()):
+                    g.geography_ranking = 17 - i
+            # Total
+            for i, g in enumerate(ClassAverageGrade.query.filter_by(
+                    test_time=test.test_time,
+                    subject=subject).order_by(ClassAverageGrade.total).all()):
+                g.total_ranking = 17 - i
 
-input_data()
-for test in Test.query.all():
-    for subject in ['文科', '理科']:
-        # Chinese
-        for i, g in enumerate(ClassAverageGrade.query.filter_by(
-                test_time=test.test_time,
-                subject=subject).order_by(ClassAverageGrade.chinese).all()):
-            g.chinese_ranking = 17 - i
-        # Match
-        for i, g in enumerate(ClassAverageGrade.query.filter_by(
-                test_time=test.test_time,
-                subject=subject).order_by(ClassAverageGrade.match).all()):
-            g.match_ranking = 17 - i
-        # English
-        for i, g in enumerate(ClassAverageGrade.query.filter_by(
-                test_time=test.test_time,
-                subject=subject).order_by(ClassAverageGrade.english).all()):
-            g.english_ranking = 17 - i
-        if subject == '理科':
-            # Physics
-            for i, g in enumerate(ClassAverageGrade.query.filter_by(
-                    test_time=test.test_time,
-                    subject=subject).order_by(ClassAverageGrade.physics).all()):
-                g.physics_ranking = 17 - i
-            # Chemistry
-            for i, g in enumerate(ClassAverageGrade.query.filter_by(
-                    test_time=test.test_time,
-                    subject=subject).order_by(ClassAverageGrade.chemistry).all()):
-                g.chemistry_ranking = 17 - i
-            # Biology
-            for i, g in enumerate(ClassAverageGrade.query.filter_by(
-                    test_time=test.test_time,
-                    subject=subject).order_by(ClassAverageGrade.biology).all()):
-                g.biology_ranking = 17 - i
-        else:
-            # Politics
-            for i, g in enumerate(ClassAverageGrade.query.filter_by(
-                    test_time=test.test_time,
-                    subject=subject).order_by(ClassAverageGrade.politics).all()):
-                g.politics_ranking = 17 - i
-            # History
-            for i, g in enumerate(ClassAverageGrade.query.filter_by(
-                    test_time=test.test_time,
-                    subject=subject).order_by(ClassAverageGrade.history).all()):
-                g.history_ranking = 17 - i
-            # Geography
-            for i, g in enumerate(ClassAverageGrade.query.filter_by(
-                    test_time=test.test_time,
-                    subject=subject).order_by(ClassAverageGrade.geography).all()):
-                g.geography_ranking = 17 - i
-        # Total
-        for i, g in enumerate(ClassAverageGrade.query.filter_by(
-                test_time=test.test_time,
-                subject=subject).order_by(ClassAverageGrade.total).all()):
-            g.total_ranking = 17 - i
-
-            db.session.commit()
+                db.session.commit()

@@ -50,6 +50,26 @@ class GradeBaseNoRanking(db.Model):
     history = db.Column(db.Float)
     total = db.Column(db.Float)
 
+    def set_grade(self, subject: str, grade: int or float):
+        if subject == 'chinese':
+            self.chinese = grade
+        elif subject == 'match':
+            self.match = grade
+        elif subject == 'english':
+            self.english = grade
+        elif subject == 'politics':
+            self.politics = grade
+        elif subject == 'history':
+            self.history = grade
+        elif subject == 'geography':
+            self.geography = grade
+        elif subject == 'physics':
+            self.physics = grade
+        elif subject == 'chemistry':
+            self.chemistry = grade
+        elif subject == 'biology':
+            self.biology = grade
+
     def __repr__(self):
         back1 = '语文:%s 数学:%s 英语:%s ' % (str(self.chinese), str(self.match), str(self.english))
         if self.subject == '文科':

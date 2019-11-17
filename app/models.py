@@ -155,12 +155,18 @@ class TestHighGrade(GradeBaseNoRanking):
     test_time = db.Column(db.Integer, db.ForeignKey('tests.test_time'))
     test = db.relationship('Test', backref='test_high_grades')
 
+    def __init__(self, test: Test):
+        self.test = test
+
 
 class TestAverageGrade(GradeBaseNoRanking):
     __tablename__ = 'test_average_grades'
 
     test_time = db.Column(db.Integer, db.ForeignKey('tests.test_time'))
     test = db.relationship('Test', backref='test_average_grades')
+
+    def __init__(self, test: Test):
+        self.test = test
 
 
 class AnalysisStudent(db.Model):

@@ -2,6 +2,7 @@ from pyecharts.charts import Line, Bar
 from pyecharts import options as opts
 from app.models import *
 from pyecharts.globals import ThemeType
+import Subject
 
 
 def student_type(class_index: int) -> str:
@@ -97,12 +98,11 @@ def student_grade_compared(student_grade: StudentGrade) -> Bar:
     :param student_grade:StudentGrade
     :return: bar:Bar
     """
-    must_subject = ['total', 'chinese', 'match', 'english']
     data = {'student_grade': [], 'average_grade': [], 'high_grade': []}
     if student_grade.subject == '文科':
-        subjects = must_subject + ['politics', 'history', 'geography']
+        subjects = Subject.wen_all_subject(True)
     else:
-        subjects = must_subject + ['physics', 'chemistry', 'biology']
+        subjects = Subject.li_all_subject(True)
     for subject in subjects:
         data['student_grade'].append(student_grade.grade_dict()[subject])
         data['average_grade'].append(TestAverageGrade.query.filter_by(

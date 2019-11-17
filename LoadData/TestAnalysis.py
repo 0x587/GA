@@ -1,5 +1,6 @@
 from app.models import *
 import numpy as np
+import Subject
 
 high_line = 80
 for test in Test.query.all():
@@ -12,11 +13,10 @@ for test in Test.query.all():
         db.session.add(high_grade)
         grades = StudentGrade.query.filter_by(
             subject=subject_class, test_time=test.test_time).all()
-        must_subject = ['chinese', 'match', 'english', 'total']
         if subject_class == '文科':
-            subjects = must_subject + ['politics', 'history', 'geography']
+            subjects = Subject.wen_all_subject(True)
         else:
-            subjects = must_subject + ['physics', 'chemistry', 'biology']
+            subjects = Subject.li_all_subject(True)
         for subject in subjects:
             grade_array = np.array([g.grade_dict()[subject] for g in grades])
             average_grade.set_grade(subject, float(round(np.average(grade_array), 2)))

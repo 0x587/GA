@@ -50,6 +50,13 @@ class GradeBaseNoRanking(db.Model):
     history = db.Column(db.Float)
     total = db.Column(db.Float)
 
+    def grade_dict(self):
+        return {'subject': self.subject,
+                'chinese': self.chinese, 'match': self.match, 'english': self.english,
+                'biology': self.biology, 'physics': self.physics, 'chemistry': self.chemistry,
+                'politics': self.politics, 'history': self.history, 'geography': self.geography,
+                'total': self.total}
+
     def set_grade(self, subject: str, grade: int or float):
         if subject == 'chinese':
             self.chinese = grade

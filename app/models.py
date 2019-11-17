@@ -69,6 +69,10 @@ class GradeBaseNoRanking(db.Model):
             self.chemistry = grade
         elif subject == 'biology':
             self.biology = grade
+        elif subject == 'total':
+            self.total = grade
+        else:
+            raise KeyError('This subject does not exist:{}'.format(subject))
 
     def __repr__(self):
         back1 = '语文:%s 数学:%s 英语:%s ' % (str(self.chinese), str(self.match), str(self.english))

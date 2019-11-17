@@ -33,32 +33,22 @@ class Test(db.Model):
         return '{}in{}'.format(self.test_name, self.test_time)
 
 
-class GradeBase(db.Model):
+class GradeBaseNoRanking(db.Model):
     __abstract__ = True
 
     ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     subject = db.Column(db.String(2))
 
     chinese = db.Column(db.Float)
-    chinese_ranking = db.Column(db.Integer)
     match = db.Column(db.Float)
-    match_ranking = db.Column(db.Integer)
     english = db.Column(db.Float)
-    english_ranking = db.Column(db.Integer)
     physics = db.Column(db.Float)
-    physics_ranking = db.Column(db.Integer)
     chemistry = db.Column(db.Float)
-    chemistry_ranking = db.Column(db.Integer)
     biology = db.Column(db.Float)
-    biology_ranking = db.Column(db.Integer)
     geography = db.Column(db.Float)
-    geography_ranking = db.Column(db.Integer)
     politics = db.Column(db.Float)
-    politics_ranking = db.Column(db.Integer)
     history = db.Column(db.Float)
-    history_ranking = db.Column(db.Integer)
     total = db.Column(db.Float)
-    total_ranking = db.Column(db.Integer)
 
     def __repr__(self):
         back1 = '语文:%s 数学:%s 英语:%s ' % (str(self.chinese), str(self.match), str(self.english))
@@ -68,6 +58,21 @@ class GradeBase(db.Model):
             back2 = '物理:%s 化学:%s 生物:%s ' % (str(self.physics), str(self.chemistry), str(self.biology))
         back = back1 + back2
         return back
+
+
+class GradeBase(GradeBaseNoRanking):
+    __abstract__ = True
+
+    chinese_ranking = db.Column(db.Integer)
+    match_ranking = db.Column(db.Integer)
+    english_ranking = db.Column(db.Integer)
+    physics_ranking = db.Column(db.Integer)
+    chemistry_ranking = db.Column(db.Integer)
+    biology_ranking = db.Column(db.Integer)
+    geography_ranking = db.Column(db.Integer)
+    politics_ranking = db.Column(db.Integer)
+    history_ranking = db.Column(db.Integer)
+    total_ranking = db.Column(db.Integer)
 
 
 class ClassAverageGrade(GradeBase):
@@ -118,6 +123,20 @@ class StudentGrade(GradeBase):
                 'biology': self.biology, 'physics': self.physics, 'chemistry': self.chemistry,
                 'politics': self.politics, 'history': self.history, 'geography': self.geography,
                 'total': self.total, 'ID': self.student_ID}
+
+
+class TestHighGrade(GradeBaseNoRanking):
+    __tablename__ = 'test_high_grades'
+
+    test_time = db.Column(db.Integer, db.ForeignKey('tests.test_time'))
+    test = db.relationship('Test', backref='test_high_grades')
+
+
+class TestAverageGrade(GradeBaseNoRanking):
+    __tablename__ = 'test_average_grades'
+
+    test_time = db.Column(db.Integer, db.ForeignKey('tests.test_time'))
+    test = db.relationship('Test', backref='test_average_grades')
 
 
 class AnalysisStudent(db.Model):

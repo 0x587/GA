@@ -23,9 +23,11 @@ def li_all_subject(include_total: bool = True) -> list:
     """
     返回理科全部科目。
     :param include_total:
-    :return: li_all_subject
+    :return: subjects
     """
-    return must_subject(include_total) + li_subject()
+    subjects = must_subject(include_total)
+    subjects[3:2] = li_subject()
+    return subjects
 
 
 def wen_subject() -> list:
@@ -40,6 +42,8 @@ def wen_all_subject(include_total: bool = True) -> list:
     """
     返回文科全部科目。
     :param include_total:
-    :return: wen_all_subject
+    :return: subjects
     """
-    return must_subject(include_total) + wen_subject()
+    subjects = must_subject(include_total)
+    subjects[3:2] = wen_subject()
+    return subjects

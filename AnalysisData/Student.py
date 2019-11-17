@@ -89,3 +89,34 @@ def personal_history_grade(student: Student) -> Line:
                                                            subtitle='预测结果使用{}次方程拟合'.
                                                            format('二')))
     return current_line.overlap(future_line)
+
+
+def student_grade_compared(student_grade: StudentGrade) -> Bar:
+    """
+    生成该考生本次考试的成绩对比条形图。
+    :param student_grade:StudentGrade
+    :return: bar:Bar
+    """
+    must_subject = ['total', 'chinese', 'match', 'english']
+    data = {'student_grade': [], 'average_grade': [], 'high_grade': []}
+    if student_grade.subject == '文科':
+        subjects = must_subject + ['politics', 'history', 'geography']
+    else:
+        subjects = must_subject + ['physics', 'chemistry', 'biology']
+    for subject in subjects:
+        data['student_grade'].append(student_grade.grade_dict()[subject])
+        data['average_grade'].append(TestAverageGrade.query.filter_by(
+            subject='理科', test_time=student_grade.test_time).first()
+                                     .grade_dict()[subject])
+        data['high_grade'].append(TestHighGrade.query.filter_by(
+            subject='理科', test_time=student_grade.test_time).first()
+                                  .grade_dict()[subject])
+
+    bar = (
+        Bar()
+            .add_xaxis(subjects)
+            .add_yaxis('student_grade', data['student_grade'])
+            .add_yaxis('average_grade', data['average_grade'])
+            .add_yaxis('high_grade', data['high_grade'])
+    )
+    return bar

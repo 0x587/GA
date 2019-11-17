@@ -2,6 +2,10 @@ from app.models import *
 
 
 def set_level():
+    """
+    计算所有学生的平均排名。
+    :return: None
+    """
     grades = Test.query.order_by(Test.test_time.desc()).first().grades
     liberal_arts_count = len([g for g in grades if g.subject == '文科'])
     science_count = len([g for g in grades if g.subject == '理科'])

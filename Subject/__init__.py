@@ -1,3 +1,6 @@
+from app.models import StudentGrade
+
+
 def must_subject(include_total: bool = True) -> list:
     """
     返回必修科目。
@@ -47,3 +50,14 @@ def wen_all_subject(include_total: bool = True) -> list:
     subjects = must_subject(include_total)
     subjects[3:2] = wen_subject()
     return subjects
+
+
+def subjects_by_grade(grade: StudentGrade) -> list:
+    """
+    通过传入的Grade对象判断返回科目列表。
+    :param grade:
+    :return: subjects
+    """
+    return wen_all_subject() \
+        if grade.subject == '文科' \
+        else li_all_subject()

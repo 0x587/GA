@@ -4,6 +4,7 @@ import re
 import os
 from LoadData.LoadFile import load_file
 from LoadData.ClassRanking import sort_class_ranking
+from LoadData.StudentAnalysis import set_level
 
 
 def sort_total_ranking():
@@ -39,3 +40,5 @@ if __name__ == '__main__':
     sort_total_ranking()
     print('Start sort class ranking')
     sort_class_ranking()
+    print('Start analysis student')
+    set_level()

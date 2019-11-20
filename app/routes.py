@@ -31,10 +31,7 @@ def class_info(class_index):
         student_infos.append({'index': s[0], 'name': s[1], 'details': details,
                               'full_detail': None, 'ID': s[1].ID})
     distributed_chart, distributed_data = class_grade_distributed(class_index)
-    if distributed_data['top'] > 10:
-        top_level = '较多'
-    else:
-        top_level = '处于平均水平'
+    top_level = '较多' if distributed_data['top'] > 10 else '处于平均水平'
     analysis = '该班成绩主要集中在{level}水平<br>顶尖同学数量{top_level}'.format(
         level=max(distributed_data, key=distributed_data.get), top_level=top_level)
 

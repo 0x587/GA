@@ -89,6 +89,14 @@ class GradeBase(GradeBaseNoRanking):
     history_ranking = db.Column(db.Integer)
     total_ranking = db.Column(db.Integer)
 
+    def set_ranking(self, subject: str, grade: int or float):
+        if subject in ['chinese', 'match', 'english', 'total'] \
+                + ['physics', 'chemistry', 'biology'] \
+                + ['politics', 'history', 'geography']:
+            self.__dict__[subject + '_ranking'] = grade
+        else:
+            raise KeyError('This subject does not exist:{}'.format(subject))
+
 
 class ClassAverageGrade(GradeBase):
     __tablename__ = 'class_average_grades'

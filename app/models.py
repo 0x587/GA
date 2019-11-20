@@ -148,7 +148,7 @@ class StudentGrade(GradeBase):
                 'total': self.total, 'ID': self.student_ID}
 
 
-class TestHighGrade(GradeBaseNoRanking):
+class TestHighGrade(GradeBase):
     __tablename__ = 'test_high_grades'
 
     test_time = db.Column(db.Integer, db.ForeignKey('tests.test_time'))
@@ -158,7 +158,7 @@ class TestHighGrade(GradeBaseNoRanking):
         self.test = test
 
 
-class TestAverageGrade(GradeBaseNoRanking):
+class TestAverageGrade(GradeBase):
     __tablename__ = 'test_average_grades'
 
     test_time = db.Column(db.Integer, db.ForeignKey('tests.test_time'))

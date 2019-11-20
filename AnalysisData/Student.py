@@ -77,10 +77,7 @@ def student_grade_compared(student_grade: StudentGrade) -> Bar:
     :return: bar:Bar
     """
     data = {'student_grade': [], 'average_grade': [], 'high_grade': []}
-    if student_grade.subject == '文科':
-        subjects = Subject.wen_all_subject(True)
-    else:
-        subjects = Subject.li_all_subject(True)
+    subjects = Subject.subjects_by_grade(student_grade)
     for subject in subjects:
         data['student_grade'].append(student_grade.grade_dict()[subject])
         data['average_grade'].append(TestAverageGrade.query.filter_by(

@@ -1,6 +1,7 @@
 from app.models import *
 import numpy as np
 import Subject
+from GradeRanking import grade2ranking
 
 high_line = 80
 for test in Test.query.all():
@@ -20,5 +21,11 @@ for test in Test.query.all():
         for subject in subjects:
             grade_array = np.array([g.grade_dict()[subject] for g in grades])
             average_grade.set_grade(subject, float(round(np.average(grade_array), 2)))
+            average_grade.set_ranking(subject, grade2ranking(
+                test, int(np.average(grade_array)),
+                subject=subject, subject_type=subject_class))
             high_grade.set_grade(subject, float(round(np.percentile(grade_array, high_line), 2)))
+            high_grade.set_ranking(subject, grade2ranking(
+                test, int(np.percentile(grade_array, high_line)),
+                subject=subject, subject_type=subject_class))
         db.session.commit()

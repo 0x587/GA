@@ -35,7 +35,6 @@
                 </p>
             </div>
             <div class="jumbotron">
-            {{ grades }}
                 <div class="panel-group" id="panel-859781">
                     {% for grade in grades %}
                         <div class="panel panel-default">
@@ -59,7 +58,7 @@
                                                 <div class="tab-pane {{ 'active' if each_grade.is_show else '' }}"
                                                      id="panel-{{ each_grade.index }}">
                                                     <p>
-                                                        {{ each_grade.total }}
+                                                        {{ each_grade.compared_chart|safe }}
                                                     </p>
                                                 </div>
                                             {% endfor %}

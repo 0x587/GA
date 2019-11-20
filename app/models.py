@@ -105,11 +105,27 @@ class GradeBase(GradeBaseNoRanking):
     history_ranking = db.Column(db.Integer)
     total_ranking = db.Column(db.Integer)
 
-    def set_ranking(self, subject: str, grade: int or float):
-        if subject in ['chinese', 'match', 'english', 'total'] \
-                + ['physics', 'chemistry', 'biology'] \
-                + ['politics', 'history', 'geography']:
-            self.__dict__[subject + '_ranking'] = grade
+    def set_ranking(self, subject: str, ranking: int):
+        if subject == 'chinese':
+            self.chinese_ranking = ranking
+        elif subject == 'match':
+            self.match_ranking = ranking
+        elif subject == 'english':
+            self.english_ranking = ranking
+        elif subject == 'politics':
+            self.politics_ranking = ranking
+        elif subject == 'history':
+            self.history_ranking = ranking
+        elif subject == 'geography':
+            self.geography_ranking = ranking
+        elif subject == 'physics':
+            self.physics_ranking = ranking
+        elif subject == 'chemistry':
+            self.chemistry_ranking = ranking
+        elif subject == 'biology':
+            self.biology_ranking = ranking
+        elif subject == 'total':
+            self.total_ranking = ranking
         else:
             raise KeyError('This subject does not exist:{}'.format(subject))
 

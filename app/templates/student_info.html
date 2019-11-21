@@ -62,7 +62,14 @@
                                                 <div class="tab-pane {{ 'active' if each_grade.is_show else '' }}"
                                                      id="panel-{{ each_grade.index }}">
                                                     <p>
-                                                        {{ each_grade.compared_chart|safe }}
+                                                    <div class="row clearfix">
+                                                        <div class="col-md-8">
+                                                            {{ each_grade.compared_chart|safe }}
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            {{ each_grade.radar_chart|safe }}
+                                                        </div>
+                                                    </div>
                                                     </p>
                                                 </div>
                                             {% endfor %}

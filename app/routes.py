@@ -4,7 +4,8 @@ from class_info import *
 from AnalysisData.Class import class_grade_distributed, class_type, \
     class_history_grade, class_highest_ranking, \
     class_best_subject, class_worse_subject
-from AnalysisData.Student import personal_history_grade, student_grade_compared
+from AnalysisData.Student.base_chart import personal_history_grade, \
+    student_grade_compared, student_grade_radar
 
 
 @app.route('/')
@@ -53,11 +54,12 @@ def student_info(student_id):
         grades[test_name[:2] + test_name[-3:]] = []
     for index, grade in enumerate(grade_result):
         test_name = grade.test.test_name
-        grades[test_name[:2] + test_name[-3:]].append({'is_show': False,
-                                                       'index': index,
-                                                       'test_name': grade.test.test_name[2:4],
-                                                       'compared_chart':
-                                                           student_grade_compared(grade).render_embed()})
+        grades[test_name[:2] + test_name[-3:]].append(
+            {'is_show': False,
+             'index': index,
+             'test_name': grade.test.test_name[2:4],
+             'compared_chart': student_grade_compared(grade).render_embed(),
+             'radar_chart': student_grade_radar(grade).render_embed()})
     for key, value in grades.items():
         first_index = min([v['index'] for v in value])
         for v in value:

@@ -7,6 +7,8 @@ from AnalysisData.Class import class_grade_distributed, class_type, \
 from AnalysisData.Student.base_chart import personal_history_grade, \
     student_grade_compared, student_grade_radar
 
+from app.chart_routers import *
+
 
 @app.route('/')
 def hello_world():
@@ -37,7 +39,7 @@ def class_info(class_index):
         level=max(distributed_data, key=distributed_data.get), top_level=top_level)
 
     return render_template('class_info.html',
-                           history_chart=class_history_grade(class_index).render_embed(),
+                           theme='vintage',
                            class_infos=class_infos,
                            distributed=distributed_chart.render_embed(),
                            distributed_analysis=analysis,

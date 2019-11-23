@@ -3,6 +3,10 @@
 {% block title %}
     ClassInfo
 {% endblock %}
+{% block head %}
+    {{ super() }}
+    <script type="text/javascript" src="https://assets.pyecharts.org/assets/themes/vintage.js"></script>
+{% endblock %}
 {% block app_content %}
     <div class="container">
         <div class="row clearfix">
@@ -44,13 +48,51 @@
                                 {{ distributed_analysis|safe }}
                             </p>
                         </blockquote>
-                        {{ distributed|safe }}
+                        <div id="distributed_chart" style="width: 85% ;height: 375px;left: 12.5%"></div>
+                        <script>
+                            $(
+                                function () {
+                                    const chart = echarts.init(
+                                        document.getElementById('distributed_chart'), '{{ theme }}', {renderer: 'canvas'});
+                                    $.ajax({
+                                        type: "GET",
+                                        url: "/charts/distributed_chart/{{ class_infos['class index'] }}",
+                                        dataType: "json",
+                                        success: function (result) {
+                                            chart.setOption(result);
+                                        }
+                                    });
+                                    $(window).resize(function () {
+                                        chart.resize();
+                                    });
+                                }
+                            )
+                        </script>
                     </div>
                 </div>
                 <br>
                 <div class="row clearfix">
                     <div class="col-md-12 column">
-                        {{ history_chart|safe }}
+                        <div id="history_grade_chart" style="width: 100%; height:500px;"></div>
+                        <script>
+                            $(
+                                function () {
+                                    const chart = echarts.init(
+                                        document.getElementById('history_grade_chart'), '{{ theme }}', {renderer: 'canvas'});
+                                    $.ajax({
+                                        type: "GET",
+                                        url: "/charts/history_grade_chart/{{ class_infos['class index'] }}",
+                                        dataType: 'json',
+                                        success: function (result) {
+                                            chart.setOption(result);
+                                        }
+                                    });
+                                    $(window).resize(function () {
+                                        chart.resize();
+                                    });
+                                }
+                            )
+                        </script>
                     </div>
                 </div>
             </div>

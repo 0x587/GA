@@ -48,8 +48,8 @@ def personal_history_grade(student: Student) -> Line:
 def student_grade_compared(student_grade: StudentGrade) -> Bar:
     """
     生成该考生本次考试的成绩对比条形图。
-    :param student_grade:StudentGrade
-    :return: bar:Bar
+    :param student_grade:本次考试成绩StudentGrade对象
+    :return: bar:Bar对象
     """
     data = {'student_grade': [], 'average_grade': [], 'high_grade': []}
     subjects = Subject.subjects_by_grade(student_grade)
@@ -74,6 +74,11 @@ def student_grade_compared(student_grade: StudentGrade) -> Bar:
 
 
 def student_grade_radar(student_grade: StudentGrade) -> Radar:
+    """
+    生成该考生本次考试的排名雷达图。
+    :param student_grade: 本次考试成绩StudentGrade对象
+    :return: radar: Radar图表
+    """
     subjects = Subject.subjects_by_grade(student_grade)
     data = {'student_ranking': [], 'average_ranking': [], 'high_ranking': []}
     for subject in subjects:

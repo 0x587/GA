@@ -4,7 +4,7 @@ from class_info import *
 from AnalysisData.Class import class_grade_distributed, class_type, \
     class_history_grade, class_highest_ranking, \
     class_best_subject, class_worse_subject
-from AnalysisData.Student.base_chart import personal_history_grade, \
+from AnalysisData.Student.charts import personal_history_grade, \
     student_grade_compared, student_grade_radar
 
 from app.chart_routers import *

@@ -1,2 +1,2 @@
 from AnalysisData.Student import info
-from AnalysisData.Student import base_chart
+from AnalysisData.Student import charts

@@ -36,7 +36,8 @@ def grade2ranking_with_grade(grade_id: int, subject: str = 'total') -> int:
     """
     grade = StudentGrade.query.filter_by(ID=grade_id).first()
     grades = [g[0] for g in db.session.query(StudentGrade.__dict__[subject]).filter_by(
-        test_time=grade.test_time, subject=grade.subject).all()]
+        test_time=grade.test_time, subject=grade.subject).order_by(
+                  StudentGrade.__dict__[subject].desc()).all()]
 
     return grades.index(grade.__dict__[subject]) + 1
 

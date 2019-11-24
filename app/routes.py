@@ -59,8 +59,8 @@ def student_info(student_id):
             {'is_show': False,
              'index': index,
              'test_name': grade.test.test_name[2:4],
-             'compared_chart': student_grade_compared(grade).render_embed(),
-             'radar_chart': student_grade_radar(grade).render_embed()})
+             'grade_id': grade.ID,
+             })
     for key, value in grades.items():
         first_index = min([v['index'] for v in value])
         for v in value:
@@ -68,10 +68,10 @@ def student_info(student_id):
                 v['is_show'] = True
 
     return render_template('student_info.html',
+                           theme='vintage',
                            infos=[
                                {'key': 'Name', 'value': student.student_name},
                                {'key': 'ClassIndex', 'value': student.class_index}
                            ],
-                           grades=[{'index': index,
-                                    'data': a} for index, a in enumerate(grades.items())],
+                           semesters=grades,
                            )

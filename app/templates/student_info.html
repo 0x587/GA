@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block head %}
+    {{ super() }}
+    <script type="text/javascript" src="https://assets.pyecharts.org/assets/themes/vintage.js"></script>
+{% endblock %}
 {% block title %}
     StudentInfo
 {% endblock %}
@@ -38,48 +42,86 @@
     </div>
     <div class="row clearfix">
         <div class="col-md-12 column">
-            <div>
-                <div class="panel-group" id="panel-859781">
-                    {% for grade in grades %}
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <a class="panel-title" data-toggle="collapse" data-parent="#panel-859781"
-                                   href="#panel-element-{{ grade.index }}">{{ grade.data[0] }}</a>
+            {% for semester_name,semesters in semesters.items() %}
+                <h2><strong>{{ semester_name }}</strong></h2>
+                <div class="tabbable" id="tabs-{{ semester_name }}">
+
+                <ul class="nav nav-tabs">
+                    {% for semester in semesters %}
+                        <li class="{{ 'active'if semester.is_show else '' }}">
+                            <a href="#panel-{{ semester_name }}-{{ semester.index }}"
+                               data-toggle="tab">{{ semester.test_name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="tab-content">
+                    {% for semester in semesters %}
+                        <div class="tab-pane {{ 'active'if semester.is_show else '' }}"
+                             id="panel-{{ semester_name }}-{{ semester.index }}">
+                            <div class="col-md-7 column">
+                                <div id="grade_compared_chart-{{ semester.index }}"
+                                     style="width: 115%; height:500px;
+                                     margin-left: -10%;margin-right: 5%;
+                                 "></div>
                             </div>
-                            <div id="panel-element-{{ grade.index }}" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    <div class="tabbable">
-                                        <ul class="nav nav-tabs">
-                                            {% for each_grade in grade.data[1] %}
-                                                <li class={{ 'active' if each_grade.is_show else '' }}>
-                                                    <a href="#panel-{{ each_grade.index }}"
-                                                       data-toggle="tab">{{ each_grade.test_name }}</a>
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                        <div class="tab-content">
-                                            {% for each_grade in grade.data[1] %}
-                                                <div class="tab-pane {{ 'active' if each_grade.is_show else '' }}"
-                                                     id="panel-{{ each_grade.index }}">
-                                                    <p>
-                                                    <div class="row clearfix">
-                                                        <div class="col-md-8">
-                                                            {{ each_grade.compared_chart|safe }}
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            {{ each_grade.radar_chart|safe }}
-                                                        </div>
-                                                    </div>
-                                                    </p>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="col-md-5 column">
+                                <div id="ranking_radar_chart-{{ semester.index }}"
+                                     style="width: 125%;height:500px;
+                                     margin-left: -10%;margin-right: 15%;
+                                 "></div>
                             </div>
+                            <script>
+                                $(
+                                    function () {
+                                        var chart = echarts.init(
+                                            document.getElementById('grade_compared_chart-{{ semester.index }}'), '{{ theme }}', {renderer: 'canvas'});
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "/charts/grade_compared_chart/{{ semester.grade_id }}",
+                                            dataType: 'json',
+                                            success: function (result) {
+                                                chart.setOption(result);
+                                            }
+                                        });
+                                        $(window).resize(function () {
+                                            chart.resize();
+                                        });
+                                        $('a').click(function () {
+                                            setTimeout(function () {
+                                                chart.resize();
+                                            }, 0)
+                                        });
+                                    }
+                                )
+                            </script>
+                            <script>
+                                $(
+                                    function () {
+                                        const chart = echarts.init(
+                                            document.getElementById('ranking_radar_chart-{{ semester.index }}'), '{{ theme }}', {renderer: 'canvas'});
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "/charts/ranking_radar_chart/{{ semester.grade_id }}",
+                                            dataType: 'json',
+                                            success: function (result) {
+                                                chart.setOption(result);
+                                            }
+                                        });
+                                        $(window).resize(function () {
+                                            chart.resize();
+                                        });
+                                        $('a').click(function () {
+                                            setTimeout(function () {
+                                                chart.resize();
+                                            }, 0)
+                                        });
+                                    }
+                                )
+                            </script>
                         </div>
                     {% endfor %}
                 </div>
+            {% endfor %}
             </div>
         </div>
     </div>

@@ -75,3 +75,17 @@ def student_info(student_id):
                            ],
                            semesters=grades,
                            )
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    print(e)
+    return render_template('error.html',
+                           error_code=404)
+
+
+@app.errorhandler(500)
+def service_error(e):
+    print(e)
+    return render_template('error.html',
+                           error_code=500)

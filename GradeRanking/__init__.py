@@ -29,7 +29,6 @@ def grade2ranking(test: Test, grade: int, subject: str = 'total', subject_type: 
 
 def grade2ranking_for_class(grade_id: int, subject: str = 'total') -> int:
     """
-    查找本次考试此分数对应(或最相近)的排名。
     查找本次考试此分数对应(或最相近)的班级排名。
     :param grade_id: Grade对象id
     :param subject:查找的科目

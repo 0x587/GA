@@ -63,7 +63,7 @@ def student_grade_compared(student_grade: StudentGrade) -> Bar:
                                   .grade_dict()[subject])
 
     bar = (
-        Bar(init_opts=opts.InitOpts())
+        Bar(init_opts=opts.InitOpts(theme=ThemeType.VINTAGE))
             .add_xaxis(subjects)
             .add_yaxis('student_grade', data['student_grade'])
             .add_yaxis('average_grade', data['average_grade'])

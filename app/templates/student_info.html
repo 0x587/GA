@@ -10,119 +10,146 @@
 {% block app_content %}
     <div class="row clearfix">
         <div class="col-md-3 column">
-            <div class="jumbotron">
-                <img src="/static/user.jpg" class="img-circle" width="100%">
-                <dl>
-                    {% for info in infos %}
-                        <dt>
-                            {{ info.key }}
-                        </dt>
-                        <dd>
-                            {{ info.value }}
-                        </dd>
-                    {% endfor %}
-                </dl>
+            <div class="layui-anim layui-anim-upbit">
+                <div class="jumbotron">
+                    <img src="/static/user.jpg" class="img-circle" width="100%">
+                    <dl>
+                        {% for info in infos %}
+                            <dt>
+                                {{ info.key }}
+                            </dt>
+                            <dd>
+                                {{ info.value }}
+                            </dd>
+                        {% endfor %}
+                    </dl>
+                </div>
             </div>
         </div>
         <div class="col-md-9 column">
-            <div class="jumbotron">
-                <h1>
-                    Hello, world!
-                </h1>
-                <p>
-                    This is a template for a simple marketing or informational website. It includes a large callout
-                    called the hero unit and three supporting pieces of content. Use it as a starting point to create
-                    something more unique.
-                </p>
-                <p>
-                    <a class="btn btn-primary btn-large" href="#">Learn more</a>
-                </p>
+            <div class="layui-anim layui-anim-scale">
+                <div class="jumbotron">
+                    <h1>
+                        Hello, world!
+                    </h1>
+                    <p>
+                        This is a template for a simple marketing or informational website. It includes a large callout
+                        called the hero unit and three supporting pieces of content. Use it as a starting point to
+                        create
+                        something more unique.
+                    </p>
+                    <p>
+                        <a class="btn btn-primary btn-large" href="#">Learn more</a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
     <div class="row clearfix">
-        <div class="col-md-12 column">
-            {% for semester_name,semesters in semesters.items() %}
-                <h2><strong>{{ semester_name }}</strong></h2>
-                <div class="tabbable" id="tabs-{{ semester_name }}">
-
-                <ul class="nav nav-tabs">
-                    {% for semester in semesters %}
-                        <li class="{{ 'active'if semester.is_show else '' }}">
-                            <a href="#panel-{{ semester_name }}-{{ semester.index }}"
-                               data-toggle="tab">{{ semester.test_name }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-                <div class="tab-content">
-                    {% for semester in semesters %}
-                        <div class="tab-pane {{ 'active'if semester.is_show else '' }}"
-                             id="panel-{{ semester_name }}-{{ semester.index }}">
-                            <div class="col-md-7 column">
-                                <div id="grade_compared_chart-{{ semester.index }}"
-                                     style="width: 115%; height:500px;
+        <div class="layui-anim layui-anim-scale">
+            <div class="col-md-12 column">
+                {% for semester_name,semesters in semesters.items() %}
+                    <h2><strong>{{ semester_name }}</strong></h2>
+                    <ul class="nav nav-tabs">
+                        {% for semester in semesters %}
+                            <li class="{{ 'active'if semester.is_show else '' }}">
+                                <a href="#panel-{{ semester_name }}-{{ semester.index }}"
+                                   data-toggle="tab">{{ semester.test_name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="tab-content">
+                        {% for semester in semesters %}
+                            <div class="tab-pane {{ 'active'if semester.is_show else '' }}"
+                                 id="panel-{{ semester_name }}-{{ semester.index }}">
+                                <table class="layui-hide" id="grade_analysis_table_{{ semester.index }}"></table>
+                                <div class="col-md-7 column">
+                                    <div id="grade_compared_chart-{{ semester.index }}"
+                                         style="width: 115%; height:500px;
                                      margin-left: -10%;margin-right: 5%;
                                  "></div>
-                            </div>
-                            <div class="col-md-5 column">
-                                <div id="ranking_radar_chart-{{ semester.index }}"
-                                     style="width: 125%;height:500px;
+                                </div>
+                                <div class="col-md-5 column">
+                                    <div id="ranking_radar_chart-{{ semester.index }}"
+                                         style="width: 125%;height:500px;
                                      margin-left: -10%;margin-right: 15%;
                                  "></div>
+                                </div>
+                                <script>
+                                    layui.use('table', function () {
+                                        var table = layui.table;
+
+                                        table.render({
+                                            elem: '#grade_analysis_table_{{ semester.index }}'
+                                            , url: '/api/student/grade/analysis/{{ semester.grade_id }}'
+                                            , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                            , cols: [[
+                                                {field: 'key', title: ''},
+                                                {field: 'chinese', title: '语文'},
+                                                {field: 'match', title: '数学'},
+                                                {field: 'english', title: '英语'},
+                                                {field: 'physics', title: '物理'},
+                                                {field: 'chemistry', title: '化学'},
+                                                {field: 'biology', title: '生物'},
+                                                {field: 'total', title: '总分'}
+                                            ]]
+                                        });
+                                    });
+                                </script>
+                                <script>
+                                    $(
+                                        function () {
+                                            var chart = echarts.init(
+                                                document.getElementById('grade_compared_chart-{{ semester.index }}'), '{{ theme }}', {renderer: 'canvas'});
+                                            $.ajax({
+                                                type: "GET",
+                                                url: "/charts/grade_compared_chart/{{ semester.grade_id }}",
+                                                dataType: 'json',
+                                                success: function (result) {
+                                                    chart.setOption(result);
+                                                }
+                                            });
+                                            $(window).resize(function () {
+                                                chart.resize();
+                                            });
+                                            $('a').click(function () {
+                                                setTimeout(function () {
+                                                    chart.resize();
+                                                }, 0)
+                                            });
+                                        }
+                                    )
+                                </script>
+                                <script>
+                                    $(
+                                        function () {
+                                            const chart = echarts.init(
+                                                document.getElementById('ranking_radar_chart-{{ semester.index }}'), '{{ theme }}', {renderer: 'canvas'});
+                                            $.ajax({
+                                                type: "GET",
+                                                url: "/charts/ranking_radar_chart/{{ semester.grade_id }}",
+                                                dataType: 'json',
+                                                success: function (result) {
+                                                    chart.setOption(result);
+                                                }
+                                            });
+                                            $(window).resize(function () {
+                                                chart.resize();
+                                            });
+                                            $('a').click(function () {
+                                                setTimeout(function () {
+                                                    chart.resize();
+                                                }, 0)
+                                            });
+                                        }
+                                    )
+                                </script>
                             </div>
-                            <script>
-                                $(
-                                    function () {
-                                        var chart = echarts.init(
-                                            document.getElementById('grade_compared_chart-{{ semester.index }}'), '{{ theme }}', {renderer: 'canvas'});
-                                        $.ajax({
-                                            type: "GET",
-                                            url: "/charts/grade_compared_chart/{{ semester.grade_id }}",
-                                            dataType: 'json',
-                                            success: function (result) {
-                                                chart.setOption(result);
-                                            }
-                                        });
-                                        $(window).resize(function () {
-                                            chart.resize();
-                                        });
-                                        $('a').click(function () {
-                                            setTimeout(function () {
-                                                chart.resize();
-                                            }, 0)
-                                        });
-                                    }
-                                )
-                            </script>
-                            <script>
-                                $(
-                                    function () {
-                                        const chart = echarts.init(
-                                            document.getElementById('ranking_radar_chart-{{ semester.index }}'), '{{ theme }}', {renderer: 'canvas'});
-                                        $.ajax({
-                                            type: "GET",
-                                            url: "/charts/ranking_radar_chart/{{ semester.grade_id }}",
-                                            dataType: 'json',
-                                            success: function (result) {
-                                                chart.setOption(result);
-                                            }
-                                        });
-                                        $(window).resize(function () {
-                                            chart.resize();
-                                        });
-                                        $('a').click(function () {
-                                            setTimeout(function () {
-                                                chart.resize();
-                                            }, 0)
-                                        });
-                                    }
-                                )
-                            </script>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endfor %}
+                        {% endfor %}
+                    </div>
+                {% endfor %}
             </div>
         </div>
+    </div>
     </div>
 {% endblock %}

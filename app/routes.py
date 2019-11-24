@@ -5,6 +5,8 @@ from AnalysisData.Class import class_type, class_highest_ranking, \
     class_best_subject, class_worse_subject
 
 from app.chart_routers import *
+from app.api_routers import *
+import Subject
 
 
 @app.route('/')

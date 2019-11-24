@@ -27,6 +27,20 @@ def grade2ranking(test: Test, grade: int, subject: str = 'total', subject_type: 
     return result[0].__dict__[subject + '_ranking']
 
 
+def grade2ranking_with_grade(grade_id: int, subject: str = 'total') -> int:
+    """
+    查找本次考试此分数对应(或最相近)的排名。
+    :param grade_id: Grade对象id
+    :param subject: 查找的科目
+    :return: ranking
+    """
+    grade = StudentGrade.query.filter_by(ID=grade_id).first()
+    grades = db.session.query(StudentGrade.__dict__[subject]).filter_by(
+        test_time=grade.test_time, subject=grade.subject).all()
+
+    return grades.index(grade.__dict__[subject]) + 1
+
+
 def grade2ranking_for_class(grade_id: int, subject: str = 'total') -> int:
     """
     查找本次考试此分数对应(或最相近)的班级排名。

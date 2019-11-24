@@ -9,7 +9,9 @@
 {% block title %}
     {% if title %}{{ title }}{% else %}Welcome to GradeVisualization{% endif %}
 {% endblock %}
-
+{% block body_attribs %}
+    background="../static/background.jpg"
+{% endblock %}
 {% block navbar %}
     <nav class="navbar navbar-default" role="navigation">
         <div class="navbar-header">

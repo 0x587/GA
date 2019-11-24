@@ -33,7 +33,7 @@ def class_subject(class_index: int) -> str:
 
 def class_history_grade(class_index: int) -> Timeline:
     if class_subject(class_index) == '理科':
-        ranking_max = 16
+        ranking_max = 17
     else:
         ranking_max = 3
     # TODO  文科班主科分开排序

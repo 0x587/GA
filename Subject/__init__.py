@@ -61,3 +61,10 @@ def subjects_by_grade(grade: StudentGrade) -> list:
     return wen_all_subject() \
         if grade.subject == '文科' \
         else li_all_subject()
+
+
+def subject_full_grade(subject: str) -> int:
+    if subject in must_subject(False):
+        return 150
+    else:
+        return 100

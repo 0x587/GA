@@ -28,11 +28,7 @@
             <div class="col-md-10 column">
                 <div class="row clearfix">
                     <div class="col-md-4 column">
-                        <blockquote>
-                            <p>
-                                Class infos
-                            </p>
-                        </blockquote>
+                        <blockquote class="layui-elem-quote ">Class infos</blockquote>
                         <table class="table table-hover table-striped">
                             <tbody>
                             {% for class_info in class_infos %}
@@ -45,11 +41,9 @@
                         </table>
                     </div>
                     <div class="col-md-8 column">
-                        <blockquote>
-                            <p>
-                                Class grade distributed<br>
-                                {{ distributed_analysis|safe }}
-                            </p>
+                        <blockquote class="layui-elem-quote ">
+                            Class grade distributed<br>
+                            {{ distributed_analysis|safe }}
                         </blockquote>
                         <div id="distributed_chart" style="width: 85% ;height: 375px;left: 12.5%"></div>
                         <script>
@@ -100,10 +94,8 @@
                 </div>
             </div>
             <div class="col-md-2 column">
-                <blockquote>
-                    <p>
-                        Students list
-                    </p>
+                <blockquote class="layui-elem-quote">
+                    Students list
                 </blockquote>
                 <div class="panel-group" id="panel-382092">
                     {% for student in students %}

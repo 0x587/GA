@@ -66,5 +66,7 @@ def subjects_by_grade(grade: StudentGrade) -> list:
 def subject_full_grade(subject: str) -> int:
     if subject in must_subject(False):
         return 150
+    elif subject == 'total':
+        return 750
     else:
         return 100

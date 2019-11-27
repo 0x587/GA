@@ -40,6 +40,28 @@
                     });
                 });
             </script>
+            <blockquote class="layui-elem-quote">分数分布</blockquote>
+            <table class="layui-hide" id="distributed-table"></table>
+            <script>
+                layui.use('table', function () {
+                    const table = layui.table;
+                    table.render({
+                        elem: '#distributed-table'
+                        , url: '/api/test/data/distributed/{{test.test_time}}'
+                        , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                        , size: 'sm'
+                        , cols: [[
+                            {field: 'key', title: ''},
+                            {field: 'chinese', title: '语文人数'},
+                            {field: 'match', title: '数学人数'},
+                            {field: 'english', title: '英语人数'},
+                            {field: 'physics', title: '物理人数'},
+                            {field: 'chemistry', title: '化学人数'},
+                            {field: 'biology', title: '生物人数'},
+                        ]]
+                    });
+                });
+            </script>
         </div>
     </div>
 {% endblock %}

@@ -76,6 +76,11 @@ def student_info(student_id):
                            )
 
 
+@app.route('/test_info/<int:test_time>')
+def test_info(test_time):
+    page_not_found
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     print(e)

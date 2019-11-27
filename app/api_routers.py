@@ -3,6 +3,7 @@ from app.models import *
 import json
 import Subject
 import GradeRanking
+import numpy as np
 
 
 @app.route('/api/student/grade/analysis/<int:grade_id>')
@@ -38,4 +39,39 @@ def student_grade_analysis_table_data(grade_id: int):
     result['data'][4]['key'] = '年级名次'
     result['data'][5]['key'] = '进退步'
     result['data'][6]['key'] = '重点线'
+    return json.dumps(result)
+
+
+@app.route('/api/test/data/total/<int:test_time>')
+def test_total_table_data_(test_time: int):
+    test = Test.query.filter_by(test_time=test_time).first()
+    grades = StudentGrade.query.filter_by(test_time=test_time, subject='理科').all()
+    result = {'code': 0, 'msg': '', 'data': [{} for _ in range(10)]}
+
+    test_avg_grade = TestAverageGrade.query.filter_by(
+        test_time=test_time, subject='理科').first()
+
+    for subject in Subject.li_all_subject():
+        scores = [grade.grade_dict()[subject] for grade in grades]
+        result['data'][0][subject] = len(test.student_grades)
+        result['data'][1][subject] = test_avg_grade.grade_dict()[subject]
+        result['data'][2][subject] = None
+        result['data'][3][subject] = None
+        result['data'][4][subject] = np.max(scores)
+        result['data'][5][subject] = np.min(scores)
+        result['data'][6][subject] = np.std(scores).round(1)
+        result['data'][7][subject] = None
+        result['data'][8][subject] = None
+        result['data'][9][subject] = None
+
+    result['data'][0]['key'] = '参考人数'
+    result['data'][1]['key'] = '年级平均分'
+    result['data'][2]['key'] = '普通班平均分'
+    result['data'][3]['key'] = '实验班平均分'
+    result['data'][4]['key'] = '最高分'
+    result['data'][5]['key'] = '最低分'
+    result['data'][6]['key'] = '标准差'
+    result['data'][7]['key'] = '优秀率'
+    result['data'][8]['key'] = '良好率'
+    result['data'][9]['key'] = '及格率'
     return json.dumps(result)

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block app_content %}
+
+    <table class="layui-hide" id="total-table"></table>
+    <script>
+        layui.use('table', function () {
+            const table = layui.table;
+            table.render({
+                elem: '#total-table'
+                , url: '/api/test/data/total/{{test.test_time}}'
+                , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                , size: 'sm'
+                , cols: [[
+                    {field: 'key', title: ''},
+                    {field: 'chinese', title: '语文'},
+                    {field: 'match', title: '数学'},
+                    {field: 'english', title: '英语'},
+                    {field: 'physics', title: '物理'},
+                    {field: 'chemistry', title: '化学'},
+                    {field: 'biology', title: '生物'},
+                    {field: 'total', title: '总分'}
+                ]]
+            });
+        });
+    </script>
+{% endblock %}

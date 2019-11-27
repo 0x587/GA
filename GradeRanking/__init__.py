@@ -58,6 +58,6 @@ def grade2ranking_for_class(grade_id: int, subject: str = 'total') -> int:
     return grades.index(grade.__dict__[subject]) + 1
 
 
-def grade_rate(grades: list, grade_line: int) -> float:
+def grade_rate(grades: list, grade_line: int or float) -> float:
     target = [g for g in grades if g >= grade_line]
     return len(target) / len(grades)

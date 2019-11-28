@@ -1,5 +1,7 @@
 from app import app
 from app.models import *
+from AnalysisData.Test import test_grade_distributed
+
 import json
 import Subject
 import GradeRanking
@@ -84,15 +86,5 @@ def test_total_table_data(test_time: int):
 
 @app.route('/api/test/data/distributed/<int:test_time>')
 def test_distributed_table_data(test_time: int):
-    test = Test.query.filter_by(test_time=test_time).first()
-    grades = StudentGrade.query.filter_by(test_time=test_time, subject='理科').all()
-    result = {'code': 0, 'msg': '', 'data': [{} for _ in range(15)]}
-
-    for subject in Subject.li_all_subject(False):
-        scores = [grade.grade_dict()[subject] for grade in grades]
-        for i in range(15):
-            result['data'][14 - i][subject] = len([_ for _ in scores if i * 10 < _ < i * 10 + 10])
-
-    for i in range(15):
-        result['data'][14 - i]['key'] = '{}分—{}分段'.format(i * 10, i * 10 + 10)
+    result = test_grade_distributed(test_time)
     return json.dumps(result)

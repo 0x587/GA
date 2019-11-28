@@ -5,7 +5,7 @@ from pyecharts.globals import ThemeType
 import Subject
 
 
-def test_grade_distributed(test_time: int) -> Bar:
+def test_grade_distributed(test_time: int) -> dict:
     grades = StudentGrade.query.filter_by(test_time=test_time, subject='理科').all()
     result = {'code': 0, 'msg': '', 'data': [{} for _ in range(15)]}
 

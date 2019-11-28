@@ -6,6 +6,29 @@
 {% block app_content %}
     <div class="row clearfix">
         <div class="layui-col-md12">
+            <script>
+                layui.use('layer', function () {
+                    let layer = layui.layer;
+                    layer.open(
+                        {
+                            title: '目录',
+                            offset: 'r',
+                            shade: 0,
+                            btn: '',
+                            area: '11.5%',
+                            content:
+                                '<ul class="site-dir layui-layer-wrap" style="display: block;">\n' +
+                                '  <li><a href="#total"><cite><span class="layui-badge-dot layui-bg-black">' +
+                                '</span> 总体一览</cite></a></li>\n' +
+                                '  <li><a href="#distributed"><span class="layui-badge-dot layui-bg-black">' +
+                                '</span><cite> 分数分布</cite></a></li>\n' +
+                                '  <li><a href="#compare"><span class="layui-badge-dot layui-bg-black">' +
+                                '</span><cite> 各班均分对比</cite></a></li>\n' +
+                                '</ul>',
+                        }
+                    )
+                });
+            </script>
             <div class="jumbotron">
                 <h1>
                     <strong>
@@ -21,7 +44,7 @@
                     <a class="btn btn-primary btn-large" href="#">Learn more</a>
                 </p>
             </div>
-            <blockquote class="layui-elem-quote">总体一览</blockquote>
+            <blockquote class="layui-elem-quote" id="total">总体一览</blockquote>
             <table class="layui-hide" id="total-table"></table>
             <script>
                 layui.use('table', function () {
@@ -45,7 +68,7 @@
                     });
                 });
             </script>
-            <blockquote class="layui-elem-quote">分数分布</blockquote>
+            <blockquote class="layui-elem-quote" id="distributed">分数分布</blockquote>
             {# TODO 表格转九十度 #}
             <div class="layui-card">
                 <div class="layui-card-body">
@@ -94,6 +117,7 @@
                     }
                 )
             </script>
+            <blockquote class="layui-elem-quote" id="compare">各班均分对比</blockquote>
         </div>
     </div>
 {% endblock %}

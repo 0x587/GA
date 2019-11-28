@@ -39,11 +39,17 @@ def test_grade_distributed_chart(test_time: int, subject: str = 'total') -> Bar:
                     rotate=-15
                 )
             ),
+            yaxis_opts=opts.AxisOpts(
+                name='人数',
+                axislabel_opts=opts.LabelOpts(
+                    formatter='{value}人'
+                )
+            ),
             datazoom_opts=[opts.DataZoomOpts(type_='slider',
                                              range_start=5, range_end=55),
                            opts.DataZoomOpts(type_="inside")],
-            legend_opts=opts.LegendOpts(is_show=False)
+            legend_opts=opts.LegendOpts(is_show=False),
+            title_opts=opts.TitleOpts(title='{}分数段分数'.format(subject), pos_left='47.5%')
         )
     )
     return bar
-

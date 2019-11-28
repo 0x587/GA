@@ -1,6 +1,7 @@
 from app import app
 from AnalysisData.Class import class_history_grade, class_grade_distributed
 from AnalysisData.Student.charts import student_grade_radar, student_grade_compared
+from AnalysisData.Test import test_grade_distributed_chart
 from app.models import *
 
 
@@ -26,3 +27,8 @@ def grade_compared_chart(grade_id: int):
 def ranking_radar_chart(grade_id: int):
     return student_grade_radar(
         StudentGrade.query.filter_by(ID=grade_id).first()).dump_options_with_quotes()
+
+
+@app.route('/charts/test_grade_distributed_chart/<int:test_time>/<string:subject>')
+def grade_distributed_chart(test_time: int, subject: str):
+    return test_grade_distributed_chart(test_time, subject).dump_options_with_quotes()

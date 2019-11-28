@@ -86,5 +86,5 @@ def test_total_table_data(test_time: int):
 
 @app.route('/api/test/data/distributed/<int:test_time>')
 def test_distributed_table_data(test_time: int):
-    result = test_grade_distributed(test_time)
+    result = {'code': 0, 'msg': '', 'data': test_grade_distributed(test_time)}
     return json.dumps(result)

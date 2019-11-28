@@ -5,7 +5,7 @@
 {% endblock %}
 {% block app_content %}
     <div class="row clearfix">
-        <div class="col-md-12 column">
+        <div class="layui-col-md12">
             <div class="jumbotron">
                 <h1>
                     <strong>
@@ -47,7 +47,13 @@
             </script>
             <blockquote class="layui-elem-quote">分数分布</blockquote>
             {# TODO 表格转九十度 #}
-            <table class="layui-hide" id="distributed-table"></table>
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <table class="layui-hide" id="distributed-table"></table>
+                    <hr class="layui-bg-gray">
+                    <div class="layui-box" id="test-distributed-chart" style="width: 100%;height: 500px"></div>
+                </div>
+            </div>
             <script>
                 layui.use('table', function () {
                     const table = layui.table;
@@ -69,7 +75,6 @@
                     });
                 });
             </script>
-            <div class="layui-box" id="test-distributed-chart" style="width: 100%;height: 500px"></div>
             <script>
                 $(
                     function () {

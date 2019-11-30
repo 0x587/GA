@@ -76,6 +76,17 @@ def student_info(student_id):
                            )
 
 
+@app.route('/test_info/<int:test_time>')
+def test_info(test_time):
+    test_data = {}
+    test = Test.query.filter_by(test_time=test_time).first()
+    test_data['name'] = test.test_name
+    test_data['test_time'] = test.test_time
+    return render_template('test_info.html'
+                           , test=test_data,
+                           theme='vintage')
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     print(e)

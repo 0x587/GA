@@ -121,7 +121,6 @@
                 <div class="layui-tab-content">
                 </div>
             </div>
-            <div class="layui-box" style="width: 100%;height: 500px" id="compare-"></div>
             <script>
                 //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
                 layui.use('element', function () {
@@ -162,6 +161,7 @@
                         console.log(data.index); //得到当前Tab的所在下标
                         charts[data.index].resize();
                     });
+                    element.tabChange('test1', 'chinese');
                 });
             </script>
         </div>

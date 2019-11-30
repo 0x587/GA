@@ -53,3 +53,54 @@ def test_grade_distributed_chart(test_time: int, subject: str = 'total') -> Bar:
         )
     )
     return bar
+
+
+def test_avg_grade_compare(test_time: int) -> dict:
+    """
+    :param test_time:
+    :return: charts:{subject:chart,,,} example:{'english':chart1,'chinese':chart2,,,}
+    """
+    result = {}
+    avg_grades = ClassAverageGrade.query.filter_by(
+        test_time=test_time, subject='理科').order_by(ClassAverageGrade.class_index).all()
+    test_avg_grade = TestAverageGrade.query.filter_by(test_time=test_time, subject='理科').first()
+    for subject in Subject.li_all_subject():
+        avg = test_avg_grade.grade_dict()[subject]
+        chart = (
+            Bar(init_opts=opts.InitOpts(theme=ThemeType.VINTAGE))
+                .add_xaxis(['{}班'.format(i + 1) for i in range(17)])
+                .add_yaxis('平均分', [round(ag.grade_dict()[subject], 1)
+                                   for ag in avg_grades], yaxis_index=0)
+                .add_yaxis('平均分差', [round(ag.grade_dict()[subject] - avg, 1)
+                                    for ag in avg_grades], yaxis_index=1,
+                           )
+                .set_global_opts(
+                yaxis_opts=opts.AxisOpts(
+                    name='均分',
+                    axislabel_opts=opts.LabelOpts(
+                        formatter='{value}分'
+                    )
+                ),
+                xaxis_opts=opts.AxisOpts(
+                    axisline_opts=opts.AxisLineOpts(
+                        on_zero_axis_index=1
+                    )
+                ),
+                datazoom_opts=[
+                    opts.DataZoomOpts(type_='slider', range_start=5, range_end=55),
+                    opts.DataZoomOpts(type_='inside')
+                ],
+                title_opts=opts.TitleOpts(title='各班{}均分对比图'.format(subject))
+
+            )
+                .extend_axis(
+                yaxis=opts.AxisOpts(
+                    name='均分差',
+                    axislabel_opts=opts.LabelOpts(
+                        formatter='{value}分'
+                    )
+                )
+            )
+        )
+        result[subject] = chart
+    return result

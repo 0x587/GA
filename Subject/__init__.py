@@ -96,5 +96,7 @@ def en2cn(subject: str) -> str:
         return '历史'
     elif subject == 'geography':
         return '地理'
+    elif subject == 'total':
+        return '总分'
     else:
-        raise KeyError('This subject is no exist')
+        raise KeyError('This subject is no exist:{}'.format(subject))

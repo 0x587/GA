@@ -90,7 +90,7 @@ def test_avg_grade_compare(test_time: int) -> dict:
                     opts.DataZoomOpts(type_='slider', range_start=5, range_end=55),
                     opts.DataZoomOpts(type_='inside')
                 ],
-                title_opts=opts.TitleOpts(title='各班{}均分对比图'.format(subject))
+                title_opts=opts.TitleOpts(title='各班{}均分对比图'.format(Subject.en2cn(subject)))
 
             )
                 .extend_axis(

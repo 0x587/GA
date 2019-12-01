@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block app_content %}
     <div class="row clearfix">
-        <div class="layui-col-md12">
+        <div class="layui-col-sm12">
             <script>
                 layui.use('layer', function () {
                     let layer = layui.layer;
@@ -10,7 +10,8 @@
                             title: '目录',
                             offset: 'r',
                             shade: 0,
-                            btn: '',
+                            btn: '关闭',
+                            btnAlign: 'c',
                             area: '11.5%',
                             content:
                                 '<ul class="site-dir layui-layer-wrap" style="display: block;">\n' +

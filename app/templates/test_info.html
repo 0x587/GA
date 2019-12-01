@@ -166,7 +166,15 @@
                 });
             </script>
             <blockquote class="layui-elem-quote" id="student-distributed">各班学生构成分析</blockquote>
-            <div class="layui-box" id="test-student-distributed-chart" style="width: 100%;height: 500px"></div>
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-box" id="test-student-distributed-chart"
+                         style="width: 100%;height: 500px"></div>
+                    <hr class="layui-bg-gray">
+                    <div class="layui-box" id="test-high-grade-distributed-chart"
+                         style="width: 100%;height: 500px"></div>
+                </div>
+            </div>
             <script>
                 $(
                     function () {
@@ -175,6 +183,23 @@
                         $.ajax({
                             type: "GET",
                             url: '/charts/test_student_distributed_chart/{{test.test_time}}',
+                            dataType: 'json',
+                            success: function (result) {
+                                chart.setOption(result);
+                            }
+                        });
+                        $(window).resize(function () {
+                            chart.resize();
+                        });
+                    }
+                );
+                $(
+                    function () {
+                        let chart = echarts.init(
+                            document.getElementById('test-high-grade-distributed-chart'), '{{ theme }}', {renderer: 'canvas'});
+                        $.ajax({
+                            type: "GET",
+                            url: '/charts/test_high_grade_distributed_chart/{{test.test_time}}',
                             dataType: 'json',
                             success: function (result) {
                                 chart.setOption(result);

@@ -1,4 +1,4 @@
-from pyecharts.charts import Bar
+from pyecharts.charts import Bar, Pie
 from pyecharts import options as opts
 from app.models import *
 from pyecharts.globals import ThemeType
@@ -145,3 +145,31 @@ def test_student_distributed(test_time: int) -> Bar:
         )
     )
     return bar
+
+
+def test_high_grade_distributed(test_time: int) -> Pie:
+    grades = StudentGrade.query.filter_by(
+        test_time=test_time, subject='理科').order_by(
+        StudentGrade.total.desc()).limit(100).all()
+    data = {}
+    for i in [g.class_index for g in grades]:
+        if data.get(i):
+            data[i] += 1
+        else:
+            data[i] = 1
+    pie = (
+        Pie(init_opts=opts.InitOpts(theme=ThemeType.VINTAGE))
+            .add('', [list(z) for z in zip(data.keys(), data.values())])
+            .set_global_opts(
+            title_opts=opts.TitleOpts(
+                title='总分前 100名',
+            ),
+            legend_opts=opts.LegendOpts(
+                is_show=False
+            ),
+            tooltip_opts=opts.TooltipOpts(
+                formatter='{b}班:{c}人'
+            )
+        )
+    )
+    return pie

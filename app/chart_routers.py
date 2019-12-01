@@ -2,7 +2,7 @@ from app import app
 from AnalysisData.Class import class_history_grade, class_grade_distributed
 from AnalysisData.Student.charts import student_grade_radar, student_grade_compared
 from AnalysisData.Test import test_grade_distributed_chart, test_avg_grade_compare, \
-    test_student_distributed
+    test_student_distributed, test_high_grade_distributed
 from app.models import *
 import json
 
@@ -48,3 +48,8 @@ def grade_avg_compare_chart(test_time: int):
 @app.route('/charts/test_student_distributed_chart/<int:test_time>')
 def student_distributed_chart(test_time: int):
     return test_student_distributed(test_time).dump_options_with_quotes()
+
+
+@app.route('/charts/test_high_grade_distributed_chart/<int:test_time>')
+def high_grade_distributed_chart(test_time: int):
+    return test_high_grade_distributed(test_time).dump_options_with_quotes()

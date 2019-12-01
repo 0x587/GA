@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template
+from flask import render_template, send_file
 from class_info import *
 from AnalysisData.Class import class_type, class_highest_ranking, \
     class_best_subject, class_worse_subject
@@ -86,6 +86,11 @@ def test_info(test_time):
     return render_template('test_info.html'
                            , test=test_data,
                            theme='vintage')
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_file('static/favicon.ico')
 
 
 @app.errorhandler(404)

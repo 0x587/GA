@@ -214,11 +214,15 @@ class AnalysisStudent(db.Model):
 
     def get_level(self):
         avg = self.avg
-        if 0 < avg <= 0.15:
-            return 'top'
-        elif 0.15 < avg <= 0.45:
-            return 'high'
-        elif 0.45 < avg <= 0.75:
-            return 'medium'
-        elif 0.75 < avg <= 1:
-            return 'low'
+        if 0 < avg <= 0.05:
+            return 'A+'
+        elif 0.05 < avg <= 0.25:
+            return 'A'
+        elif 0.25 < avg <= 0.50:
+            return 'B+'
+        elif 0.50 < avg <= 0.75:
+            return 'B'
+        elif 0.75 < avg <= 0.95:
+            return 'C+'
+        elif 0.95 < avg <= 1:
+            return 'C'

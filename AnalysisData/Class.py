@@ -6,7 +6,7 @@ from pyecharts.globals import ThemeType
 
 def class_grade_distributed(class_index: int) -> (Funnel, dict):
     students: list = Student.query.filter_by(class_index=class_index)
-    data = {'top': 0, 'high': 0, 'medium': 0, 'low': 0, }
+    data = {'A+': 0, 'A': 0, 'B+': 0, 'B': 0, 'C+': 0, 'C': 0, }
     for student in students:
         data[student.analysis[0].get_level()] += 1
     chart = (
@@ -37,8 +37,8 @@ def class_history_grade(class_index: int) -> Timeline:
     else:
         ranking_max = 3
     # TODO  文科班主科分开排序
-    tl = Timeline(init_opts=opts.InitOpts(theme=ThemeType.VINTAGE,width='100%'))
-    tl.add_schema(is_auto_play=True,play_interval=1500)
+    tl = Timeline(init_opts=opts.InitOpts(theme=ThemeType.VINTAGE, width='100%'))
+    tl.add_schema(is_auto_play=True, play_interval=1500)
     for test in Test.query.all():
         cag: ClassAverageGrade = ClassAverageGrade.query.filter(
             ClassAverageGrade.test_time == test.test_time,

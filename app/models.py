@@ -226,3 +226,7 @@ class AnalysisStudent(db.Model):
             return 'C+'
         elif 0.95 < avg <= 1:
             return 'C'
+
+    @staticmethod
+    def get_level_description():
+        return 'A+:0%-5%; A:5%-25%; B+:25%-50%; B:50%-75%; C+:70%-95%; C:95%-100%; '

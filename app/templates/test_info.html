@@ -20,6 +20,8 @@
                                 '</span><cite> 分数分布</cite></a></li>\n' +
                                 '  <li><a href="#compare"><span class="layui-badge-dot layui-bg-black">' +
                                 '</span><cite> 各班均分对比</cite></a></li>\n' +
+                                '<li><a href="#student-distributed"><span class="layui-badge-dot layui-bg-black">' +
+                                '</span><cite> 各班学生构成分析</cite></a></li>\n' +
                                 '</ul>',
                         }
                     )
@@ -162,6 +164,27 @@
                     });
                     element.tabChange('compare', 'chinese');
                 });
+            </script>
+            <blockquote class="layui-elem-quote" id="student-distributed">各班学生构成分析</blockquote>
+            <div class="layui-box" id="test-student-distributed-chart" style="width: 100%;height: 500px"></div>
+            <script>
+                $(
+                    function () {
+                        let chart = echarts.init(
+                            document.getElementById('test-student-distributed-chart'), '{{ theme }}', {renderer: 'canvas'});
+                        $.ajax({
+                            type: "GET",
+                            url: '/charts/test_student_distributed_chart/{{test.test_time}}',
+                            dataType: 'json',
+                            success: function (result) {
+                                chart.setOption(result);
+                            }
+                        });
+                        $(window).resize(function () {
+                            chart.resize();
+                        });
+                    }
+                )
             </script>
         </div>
     </div>

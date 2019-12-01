@@ -70,3 +70,31 @@ def subject_full_grade(subject: str) -> int:
         return 750
     else:
         return 100
+
+
+def en2cn(subject: str) -> str:
+    """
+    学科名字英文译中文。
+    :param subject: 英文名
+    :return: subject_cn_name:中文名
+    """
+    if subject == 'chinese':
+        return '语文'
+    elif subject == 'match':
+        return '数学'
+    elif subject == 'english':
+        return '数学'
+    elif subject == 'physics':
+        return '物理'
+    elif subject == 'chemistry':
+        return '化学'
+    elif subject == 'biology':
+        return '生物'
+    elif subject == 'politics':
+        return '政治'
+    elif subject == 'history':
+        return '历史'
+    elif subject == 'geography':
+        return '地理'
+    else:
+        raise KeyError('This subject is no exist')

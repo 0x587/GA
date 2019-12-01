@@ -104,3 +104,44 @@ def test_avg_grade_compare(test_time: int) -> dict:
         )
         result[subject] = chart
     return result
+
+
+def test_student_distributed(test_time: int) -> Bar:
+    grades = StudentGrade.query.filter_by(test_time=test_time, subject='理科').all()
+    count_student = len(grades)
+    data = {'C': [], 'C+': [], 'B': [], 'B+': [], 'A': [], 'A+': []}
+    for i in range(1801, 1818):
+        for key, value in data.items():
+            value.append(None)
+        work_grades = [g for g in grades if g.class_index == i]
+        for grade in work_grades:
+            if data[grade.get_this_level(count_student)][i - 1801] is None:
+                data[grade.get_this_level(count_student)][i - 1801] = 1
+            else:
+                data[grade.get_this_level(count_student)][i - 1801] += 1
+    bar = (
+        Bar(init_opts=opts.InitOpts(theme=ThemeType.VINTAGE))
+            .add_xaxis(['{}班'.format(i + 1) for i in range(17)])
+            .set_global_opts(
+            datazoom_opts=[
+                opts.DataZoomOpts(type_='slider', range_start=5, range_end=75),
+                opts.DataZoomOpts(type_='inside')
+            ],
+            yaxis_opts=opts.AxisOpts(
+                axislabel_opts=opts.LabelOpts(
+                    formatter='{value}人'
+                )
+            ),
+            title_opts=opts.TitleOpts(
+                title='学生构成分析'
+            )
+        )
+    )
+    for key, value in data.items():
+        bar.add_yaxis(key, value, stack="stack1")
+    bar.set_series_opts(
+        label_opts=opts.LabelOpts(
+            position='inside'
+        )
+    )
+    return bar

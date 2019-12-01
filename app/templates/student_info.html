@@ -44,11 +44,34 @@
         <div class="layui-anim layui-anim-scale">
             <div class="col-md-12 column">
                 {% for semester_name,semesters in semesters.items() %}
-                    <a id="{{ 'first-semester' if semester_name=='高一上学期' else '' }}">
+                    <a id="{{ 'first-semester' if semester_name=='高一上学期' else '' }}"
+                       class="semester-{{ semester_name }}">
                         <h2>
                             <strong>{{ semester_name }}</strong>
                         </h2>
                     </a>
+                    <script>
+                        layui.use('layer', function () {
+                            let $ = layui.jquery, layer = layui.layer;
+                            $('.semester-{{ semester_name }}').on('click', function () {
+                                layer.open({
+                                    type: 1,
+                                    area: ['auto', '100px'],
+                                    content: '<a type="button" class="layui-btn layui-btn-radius" href="/test_info/{{semesters[0].test_time}}"' +
+                                        '>{{semesters[0].test_name}}</a>\n' +
+                                        '<a type="button" class="layui-btn layui-btn-radius" href="/test_info/{{semesters[0].test_time}}"' +
+                                        '>{{semesters[1].test_name}}</a>\n' +
+                                        '<a type="button" class="layui-btn layui-btn-radius" href="/test_info/{{semesters[0].test_time}}"' +
+                                        '>{{semesters[2].test_name}}</a>',
+                                    btnAlign: 'c', //按钮居中
+                                    shade: 0.2,
+                                    yes: function () {
+                                        layer.closeAll();
+                                    }
+                                });
+                            });
+                        });
+                    </script>
                     <ul class="nav nav-tabs">
                         {% for semester in semesters %}
                             <li class="{{ 'active'if semester.is_show else '' }}">

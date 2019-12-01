@@ -58,6 +58,7 @@ def student_info(student_id):
             {'is_show': False,
              'index': index,
              'test_name': grade.test.test_name[2:4],
+             'test_time': grade.test.test_time,
              'grade_id': grade.ID,
              })
     for key, value in grades.items():

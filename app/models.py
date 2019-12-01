@@ -1,4 +1,5 @@
 from app import db
+from Level import avg2level
 
 
 class Class(db.Model):
@@ -179,6 +180,10 @@ class StudentGrade(GradeBase):
                 'politics': self.politics, 'history': self.history, 'geography': self.geography,
                 'total': self.total, 'ID': self.student_ID}
 
+    def get_this_level(self, total: int) -> str:
+        avg = self.total_ranking / total
+        return avg2level(avg)
+
 
 class TestHighGrade(GradeBase):
     __tablename__ = 'test_high_grades'
@@ -214,15 +219,4 @@ class AnalysisStudent(db.Model):
 
     def get_level(self):
         avg = self.avg
-        if 0 < avg <= 0.05:
-            return 'A+'
-        elif 0.05 < avg <= 0.25:
-            return 'A'
-        elif 0.25 < avg <= 0.50:
-            return 'B+'
-        elif 0.50 < avg <= 0.75:
-            return 'B'
-        elif 0.75 < avg <= 0.95:
-            return 'C+'
-        elif 0.95 < avg <= 1:
-            return 'C'
+        return avg2level(avg)

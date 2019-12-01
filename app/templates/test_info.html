@@ -115,7 +115,7 @@
             </script>
             <blockquote class="layui-elem-quote" id="compare">各班均分对比</blockquote>
 
-            <div class="layui-tab layui-tab-brief" lay-filter="test1">
+            <div class="layui-tab layui-tab-brief" lay-filter="compare">
                 <ul class="layui-tab-title">
                 </ul>
                 <div class="layui-tab-content">
@@ -127,7 +127,7 @@
                     let element = layui.element;
                     const subjects = ['chinese', 'match', 'english', 'physics', 'chemistry', 'biology'];
                     for (let i = 0; i < subjects.length; i++) {
-                        element.tabAdd('test1', {
+                        element.tabAdd('compare', {
                             title: subjects[i]
                             , content: '<div class="layui-box" style="width: 100%;height: 500px" ' +
                                 'id="compare-subject"></div>'.replace('subject', subjects[i]) //支持传入html
@@ -157,11 +157,11 @@
                             });
                         }
                     );
-                    element.on('tab(test1)', function (data) {
+                    element.on('tab(compare)', function (data) {
                         console.log(data.index); //得到当前Tab的所在下标
                         charts[data.index].resize();
                     });
-                    element.tabChange('test1', 'chinese');
+                    element.tabChange('compare', 'chinese');
                 });
             </script>
         </div>

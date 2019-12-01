@@ -7,36 +7,134 @@
     <div class="container">
         <div class="row clearfix">
             <div class="col-md-12 column">
-                <div class="jumbotron">
-                    <h1>
-                        {{ class_index }}
-                    </h1>
-                    <p>
-                        Something README
-                    </p>
+                <div class="layui-anim layui-anim-up">
+                    <div class="jumbotron">
+                        <h1>
+                            {{ class_index }}
+                        </h1>
+                        <p>
+                            Something README
+                        </p>
+                    </div>
+
                 </div>
             </div>
         </div>
         <div class="row clearfix">
-            <div class="col-md-4 column">
-                <table class="table table-hover table-striped">
-                    <tbody>
-                    <tr class="success">
-                        <td>Class</td>
-                        <td>{{ class_index }}</td>
-                    </tr>
-                    <tr class="info">
-                        <td>Count of students</td>
-                        <td>{{ student_count }}</td>
-                    </tr>
-                    <tr class="warning">
-                        <td>Last update time</td>
-                        <td>{{ update_time }}</td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div class="col-md-10 column">
+                <div class="row clearfix">
+                    <div class="col-md-4 column">
+                        <blockquote class="layui-elem-quote ">Class infos</blockquote>
+                        <table class="table table-hover table-striped">
+                            <tbody>
+                            {% for class_info in class_infos %}
+                                <tr class="{{ ['success','info','warning']|random() }}">
+                                    <td>{{ class_info }}</td>
+                                    <td>{{ class_infos[class_info] }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-8 column">
+                        <blockquote class="layui-elem-quote ">
+                            Class grade distributed<br>
+                            {{ distributed_analysis|safe }}
+                        </blockquote>
+                        <div id="distributed_chart" style="width: 85% ;height: 375px;left: 12.5%"></div>
+                        <script>
+                            $(
+                                function () {
+                                    const chart = echarts.init(
+                                        document.getElementById('distributed_chart'), '{{ theme }}', {renderer: 'canvas'});
+                                    $.ajax({
+                                        type: "GET",
+                                        url: "/charts/distributed_chart/{{ class_infos['class index'] }}",
+                                        dataType: "json",
+                                        success: function (result) {
+                                            chart.setOption(result);
+                                        }
+                                    });
+                                    $(window).resize(function () {
+                                        chart.resize();
+                                    });
+                                }
+                            )
+                        </script>
+                    </div>
+                </div>
+                <br>
+                <div class="row clearfix">
+                    <div class="col-md-12 column">
+                        <blockquote class="layui-elem-quote">班级历史成绩</blockquote>
+                        <div id="history_grade_chart" style="width: 100%; height:500px;"></div>
+                        <script>
+                            $(
+                                function () {
+                                    const chart = echarts.init(
+                                        document.getElementById('history_grade_chart'), '{{ theme }}', {renderer: 'canvas'});
+                                    $.ajax({
+                                        type: "GET",
+                                        url: "/charts/history_grade_chart/{{ class_infos['class index'] }}",
+                                        dataType: 'json',
+                                        success: function (result) {
+                                            chart.setOption(result);
+                                        }
+                                    });
+                                    $(window).resize(function () {
+                                        chart.resize();
+                                    });
+                                }
+                            )
+                        </script>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-8 column">
+            <div class="col-md-2 column">
+                <blockquote class="layui-elem-quote">
+                    Students list
+                </blockquote>
+                <div class="panel-group" id="panel-382092">
+                    {% for student in students %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-382092"
+                                   href=#panel-element-{{ student.index }}>{{ student.name }}</a>
+                            </div>
+                            <div id="panel-element-{{ student.index }}" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    {% for detail in student.details %}
+                                        {{ detail.key }}:{{ detail.value }}<br>
+                                    {% endfor %}
+                                    <a id="modal-{{ student.index }}" href=#modal-container-{{ student.index }}
+                                       data-toggle="modal">detail</a>
+                                    <div class="modal fade" id="modal-container-{{ student.index }}" role="dialog"
+                                         aria-labelledby="myModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-hidden="true">×
+                                                    </button>
+                                                    <h4 class="modal-title" id="myModalLabel">{{ student.name }}</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    {#TODO：人员流动记录#}
+                                                    <a href=/student_info/{{ student.ID }}>Detail</a>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" data-dismiss="modal" class="btn btn-primary">
+                                                        Close
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>

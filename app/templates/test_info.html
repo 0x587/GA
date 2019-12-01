@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% block app_content %}
+    <div class="row clearfix">
+        <div class="layui-col-md12">
+            <script>
+                layui.use('layer', function () {
+                    let layer = layui.layer;
+                    layer.open(
+                        {
+                            title: '目录',
+                            offset: 'r',
+                            shade: 0,
+                            btn: '',
+                            area: '11.5%',
+                            content:
+                                '<ul class="site-dir layui-layer-wrap" style="display: block;">\n' +
+                                '  <li><a href="#total"><cite><span class="layui-badge-dot layui-bg-black">' +
+                                '</span> 总体一览</cite></a></li>\n' +
+                                '  <li><a href="#distributed"><span class="layui-badge-dot layui-bg-black">' +
+                                '</span><cite> 分数分布</cite></a></li>\n' +
+                                '  <li><a href="#compare"><span class="layui-badge-dot layui-bg-black">' +
+                                '</span><cite> 各班均分对比</cite></a></li>\n' +
+                                '</ul>',
+                        }
+                    )
+                });
+            </script>
+            <div class="jumbotron">
+                <h1>
+                    <strong>
+                        {{ test.name }}
+                    </strong>
+                </h1>
+                <p>
+                    This is a template for a simple marketing or informational website. It includes a large callout
+                    called the hero unit and three supporting pieces of content. Use it as a starting point to create
+                    something more unique.
+                </p>
+                <p>
+                    <a class="btn btn-primary btn-large" href="#">Learn more</a>
+                </p>
+            </div>
+            <blockquote class="layui-elem-quote" id="total">总体一览</blockquote>
+            <table class="layui-hide" id="total-table"></table>
+            <script>
+                layui.use('table', function () {
+                    const table = layui.table;
+                    table.render({
+                        elem: '#total-table'
+                        , url: '/api/test/data/total/{{test.test_time}}'
+                        , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                        , size: 'sm'
+                        , even: true
+                        , cols: [[
+                            {field: 'key', title: ''},
+                            {field: 'chinese', title: '语文'},
+                            {field: 'match', title: '数学'},
+                            {field: 'english', title: '英语'},
+                            {field: 'physics', title: '物理'},
+                            {field: 'chemistry', title: '化学'},
+                            {field: 'biology', title: '生物'},
+                            {field: 'total', title: '总分'}
+                        ]]
+                    });
+                });
+            </script>
+            <blockquote class="layui-elem-quote" id="distributed">分数分布</blockquote>
+            {# TODO 表格转九十度 #}
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <table class="layui-hide" id="distributed-table"></table>
+                    <hr class="layui-bg-gray">
+                    <div class="layui-box" id="test-distributed-chart" style="width: 100%;height: 500px"></div>
+                </div>
+            </div>
+            <script>
+                layui.use('table', function () {
+                    const table = layui.table;
+                    table.render({
+                        elem: '#distributed-table'
+                        , url: '/api/test/data/distributed/{{test.test_time}}'
+                        , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                        , size: 'sm'
+                        , even: true
+                        , cols: [[
+                            {field: 'key', title: ''},
+                            {field: 'chinese', title: '语文人数'},
+                            {field: 'match', title: '数学人数'},
+                            {field: 'english', title: '英语人数'},
+                            {field: 'physics', title: '物理人数'},
+                            {field: 'chemistry', title: '化学人数'},
+                            {field: 'biology', title: '生物人数'},
+                        ]]
+                    });
+                });
+            </script>
+            <script>
+                $(
+                    function () {
+                        let chart = echarts.init(
+                            document.getElementById('test-distributed-chart'), '{{ theme }}', {renderer: 'canvas'});
+                        $.ajax({
+                            type: "GET",
+                            url: '/charts/test_grade_distributed_chart/{{test.test_time}}/total',
+                            dataType: 'json',
+                            success: function (result) {
+                                chart.setOption(result);
+                            }
+                        });
+                        $(window).resize(function () {
+                            chart.resize();
+                        });
+                    }
+                )
+            </script>
+            <blockquote class="layui-elem-quote" id="compare">各班均分对比</blockquote>
+            <div class="layui-tab layui-tab-brief" lay-filter="compare">
+                <ul class="layui-tab-title">
+                </ul>
+                <div class="layui-tab-content">
+                </div>
+            </div>
+            <script>
+                //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
+                layui.use('element', function () {
+                    let element = layui.element;
+                    const subjects = ['chinese', 'match', 'english', 'physics', 'chemistry', 'biology'];
+                    for (let i = 0; i < subjects.length; i++) {
+                        element.tabAdd('compare', {
+                            title: subjects[i]
+                            , content: '<div class="layui-box" style="width: 100%;height: 500px" ' +
+                                'id="compare-subject"></div>'.replace('subject', subjects[i]) //支持传入html
+                            , id: subjects[i]
+                        })
+                    }
+                    let charts;
+                    charts = [];
+                    $(
+                        function () {
+
+                            for (let i = 0; i < subjects.length; i++) {
+                                charts[i] = echarts.init(
+                                    document.getElementById('compare-subject'.replace('subject', subjects[i])),
+                                    '{{ theme }}', {renderer: 'canvas'}
+                                )
+                            }
+                            $.ajax({
+                                type: "GET",
+                                url: '/charts/test_grade_avg_compare_chart/{{test.test_time}}',
+                                dataType: 'json',
+                                success: function (result) {
+                                    for (let i = 0; i < subjects.length; i++) {
+                                        charts[i].setOption(result[subjects[i]])
+                                    }
+                                }
+                            });
+                        }
+                    );
+                    element.on('tab(compare)', function (data) {
+                        console.log(data.index); //得到当前Tab的所在下标
+                        charts[data.index].resize();
+                    });
+                    element.tabChange('compare', 'chinese');
+                });
+            </script>
+        </div>
+    </div>
+{% endblock %}

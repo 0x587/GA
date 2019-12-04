@@ -74,106 +74,104 @@
                         });
                     });
                 </script>
-                <ul class="nav nav-tabs">
-                    {% for semester in semesters %}
-                        <li class="{{ 'active'if semester.is_show else '' }}">
-                            <a href="#panel-{{ semester_name }}-{{ semester.index }}"
-                               data-toggle="tab">{{ semester.test_name }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-                <div class="tab-content">
-                    {% for semester in semesters %}
-                        <div class="tab-pane {{ 'active'if semester.is_show else '' }}"
-                             id="panel-{{ semester_name }}-{{ semester.index }}">
-                            <table class="layui-hide" id="grade_analysis_table_{{ semester.index }}"></table>
-                            <div class="col-md-7 column">
-                                <div id="grade_compared_chart-{{ semester.index }}"
-                                     style="width: 115%; height:430px;
+                <div class="layui-tab layui-tab-brief" lay-filter="{{ semester_name }}">
+                    <ul class="layui-tab-title">
+                        {% for semester in semesters %}
+                            <li lay-id="{{ semester.test_name }}">{{ semester.test_name }}</li>
+                        {% endfor %}
+                    </ul>
+                    <div class="layui-tab-content">
+                        {% for semester in semesters %}
+                            <div class="layui-tab-item">
+                                <table class="layui-hide" id="grade_analysis_table_{{ semester.index }}"></table>
+                                <div class="col-md-7 column">
+                                    <div id="grade_compared_chart-{{ semester.index }}"
+                                         style="width: 115%; height:430px;
                                      margin-left: -10%;margin-right: 5%;
                                  "></div>
-                            </div>
-                            <div class="col-md-5 column">
-                                <div id="ranking_radar_chart-{{ semester.index }}"
-                                     style="width: 125%;height:430px;
+                                </div>
+                                <div class="col-md-5 column">
+                                    <div id="ranking_radar_chart-{{ semester.index }}"
+                                         style="width: 125%;height:430px;
                                      margin-left: -10%;margin-right: 15%;
                                  "></div>
+                                </div>
+                                {#TODO:转用Layui Tab#}
                             </div>
-                            {#TODO:转用Layui Tab#}
-                            <script>
-                                layui.use('table', function () {
-                                    const table = layui.table;
-                                    table.render({
-                                        elem: '#grade_analysis_table_{{ semester.index }}'
-                                        , url: '/api/student/grade/analysis/{{ semester.grade_id }}'
-                                        , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                                        , size: 'sm'
-                                        , cols: [[
-                                            {field: 'key', title: '', fixed: 'left'},
-                                            {field: 'chinese', title: '语文'},
-                                            {field: 'match', title: '数学'},
-                                            {field: 'english', title: '英语'},
-                                            {field: 'physics', title: '物理'},
-                                            {field: 'chemistry', title: '化学'},
-                                            {field: 'biology', title: '生物'},
-                                            {field: 'total', title: '总分'}
-                                        ]]
-                                    });
-                                });
-                            </script>
-                            <script>
-                                $(
-                                    function () {
-                                        var chart = echarts.init(
-                                            document.getElementById('grade_compared_chart-{{ semester.index }}'), '{{ theme }}', {renderer: 'canvas'});
-                                        $.ajax({
-                                            type: "GET",
-                                            url: "/charts/grade_compared_chart/{{ semester.grade_id }}",
-                                            dataType: 'json',
-                                            success: function (result) {
-                                                chart.setOption(result);
-                                            }
-                                        });
-                                        $(window).resize(function () {
-                                            chart.resize();
-                                        });
-                                        $('a').click(function () {
-                                            setTimeout(function () {
-                                                chart.resize();
-                                            }, 0)
-                                        });
-                                    }
-                                )
-                            </script>
-                            <script>
-                                $(
-                                    function () {
-                                        const chart = echarts.init(
-                                            document.getElementById('ranking_radar_chart-{{ semester.index }}'), '{{ theme }}', {renderer: 'canvas'});
-                                        $.ajax({
-                                            type: "GET",
-                                            url: "/charts/ranking_radar_chart/{{ semester.grade_id }}",
-                                            dataType: 'json',
-                                            success: function (result) {
-                                                chart.setOption(result);
-                                            }
-                                        });
-                                        $(window).resize(function () {
-                                            chart.resize();
-                                        });
-                                        $('a').click(function () {
-                                            setTimeout(function () {
-                                                chart.resize();
-                                            }, 0)
-                                        });
-                                    }
-                                )
-                            </script>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
+                <script>
+                    layui.use('element', function () {
+                        let element = layui.element;
+                        let index2grade_id = {};
+                        element.on('tab({{ semester_name }})', function (data) {
+                            console.log('{{ semester_name }}');
+                            index2grade_id[0] = '{{ semesters[0].grade_id }}';
+                            index2grade_id[1] = '{{ semesters[1].grade_id }}';
+                            index2grade_id[2] = '{{ semesters[2].grade_id }}';
+                            console.log(index2grade_id);
+
+                            layui.use('table', function () {
+                                const table = layui.table;
+                                table.render({
+                                    elem: '#grade_analysis_table_' + data.index
+                                    , url: '/api/student/grade/analysis/' + index2grade_id[data.index]
+                                    , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                    , size: 'sm'
+                                    , cols: [[
+                                        {field: 'key', title: '', fixed: 'left'},
+                                        {field: 'chinese', title: '语文'},
+                                        {field: 'match', title: '数学'},
+                                        {field: 'english', title: '英语'},
+                                        {field: 'physics', title: '物理'},
+                                        {field: 'chemistry', title: '化学'},
+                                        {field: 'biology', title: '生物'},
+                                        {field: 'total', title: '总分'}
+                                    ]]
+                                });
+
+                            });
+                            $(
+                                function () {
+                                    let chart = echarts.init(
+                                        document.getElementById('grade_compared_chart-' + data.index), '{{ theme }}', {renderer: 'canvas'});
+                                    $.ajax({
+                                        type: "GET",
+                                        url: "/charts/grade_compared_chart/" + index2grade_id[data.index],
+                                        dataType: 'json',
+                                        success: function (result) {
+                                            chart.setOption(result);
+                                        }
+                                    });
+                                    $(window).resize(function () {
+                                        chart.resize();
+                                    });
+                                }
+                            );
+                            $(
+                                function () {
+                                    const chart = echarts.init(
+                                        document.getElementById('ranking_radar_chart-' + data.index), '{{ theme }}', {renderer: 'canvas'});
+                                    $.ajax({
+                                        type: "GET",
+                                        url: "/charts/ranking_radar_chart/" + index2grade_id[data.index],
+                                        dataType: 'json',
+                                        success: function (result) {
+                                            chart.setOption(result);
+                                        }
+                                    });
+                                    $(window).resize(function () {
+                                        chart.resize();
+                                    });
+                                    chart.resize();
+                                }
+                            )
+                        });
+                        element.tabChange('{{ semester_name }}', '月考');
+                    });
+                </script>
             {% endfor %}
         </div>
-    </div>
     </div>
 {% endblock %}

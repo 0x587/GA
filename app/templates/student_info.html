@@ -51,9 +51,11 @@
             {% for semester_name,grades in semesters.items() %}
                 <a id="{{ 'first-semester' if semester_name=='高一上学期' else '' }}"
                    class="semester-{{ semester_name }}">
-                    <h2>
-                        <strong>{{ semester_name }}</strong>
-                    </h2>
+                    <blockquote class="layui-elem-quote">
+                        <strong>
+                            {{ semester_name }}
+                        </strong>
+                    </blockquote>
                 </a>
                 <script>
                     layui.use('layer', function () {
@@ -89,17 +91,19 @@
                             <div class="layui-tab-item">
                                 <table class="layui-hide"
                                        id="grade_table_{{ grade.grade_id }}"></table>
-                                <div class="layui-col-sm7">
-                                    <div id="grade_compared_chart-{{ grade.grade_id }}"
-                                         style="width: 115%; height:430px;
+                                <div class="layui-row">
+                                    <div class="layui-col-sm7">
+                                        <div id="grade_compared_chart-{{ grade.grade_id }}"
+                                             style="width: 115%; height:430px;
                                      margin-left: -10%;margin-right: 5%;
                                  "></div>
-                                </div>
-                                <div class="layui-col-sm5">
-                                    <div id="ranking_radar_chart-{{ grade.grade_id }}"
-                                         style="width: 125%;height:430px;
+                                    </div>
+                                    <div class="layui-col-sm5">
+                                        <div id="ranking_radar_chart-{{ grade.grade_id }}"
+                                             style="width: 125%;height:430px;
                                      margin-left: -10%;margin-right: 15%;
                                  "></div>
+                                    </div>
                                 </div>
                             </div>
                         {% endfor %}

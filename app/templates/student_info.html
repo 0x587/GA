@@ -46,7 +46,7 @@
     <div class="layui-row">
         <div class="layui-col-sm12 layui-anim layui-anim-scale">
             <script>
-                var tabData = {}
+                let tabData = {};
             </script>
             {% for semester_name,grades in semesters.items() %}
                 <a id="{{ 'first-semester' if semester_name=='高一上学期' else '' }}"
@@ -89,6 +89,18 @@
                             <div class="layui-tab-item">
                                 <table class="layui-hide"
                                        id="grade_table_{{ grade.grade_id }}"></table>
+                                <div class="layui-col-sm7">
+                                    <div id="grade_compared_chart-{{ grade.grade_id }}"
+                                         style="width: 115%; height:430px;
+                                     margin-left: -10%;margin-right: 5%;
+                                 "></div>
+                                </div>
+                                <div class="layui-col-sm5">
+                                    <div id="ranking_radar_chart-{{ grade.grade_id }}"
+                                         style="width: 125%;height:430px;
+                                     margin-left: -10%;margin-right: 15%;
+                                 "></div>
+                                </div>
                             </div>
                         {% endfor %}
                     </div>
@@ -126,6 +138,48 @@
                                     });
                                 });
                                 tabData[gradeID]['table']['load'] = true;
+                            }
+                            if (!tabData[gradeID]['radar']['load']) {
+                                $(
+                                    function () {
+                                        let chart = echarts.init(
+                                            document.getElementById('ranking_radar_chart-' + gradeID),
+                                            '{{ theme }}', {renderer: 'canvas'});
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "/charts/ranking_radar_chart/" + gradeID,
+                                            dataType: 'json',
+                                            success: function (result) {
+                                                chart.setOption(result);
+                                            }
+                                        });
+                                        $(window).resize(function () {
+                                            chart.resize();
+                                        });
+                                    }
+                                );
+                                tabData[gradeID]['radar']['load'] = true;
+                            }
+                            if (!tabData[gradeID]['compare']['load']) {
+                                $(
+                                    function () {
+                                        let chart = echarts.init(
+                                            document.getElementById('grade_compared_chart-' + gradeID),
+                                            '{{ theme }}', {renderer: 'canvas'});
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "/charts/grade_compared_chart/" + gradeID,
+                                            dataType: 'json',
+                                            success: function (result) {
+                                                chart.setOption(result);
+                                            }
+                                        });
+                                        $(window).resize(function () {
+                                            chart.resize();
+                                        });
+                                    }
+                                );
+                                tabData[gradeID]['compare']['load'] = true;
                             }
                         });
                         element.tabChange('{{ semester_name }}', '月考');

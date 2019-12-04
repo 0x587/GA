@@ -45,7 +45,10 @@
     </div>
     <div class="layui-row">
         <div class="layui-col-sm12 layui-anim layui-anim-scale">
-            {% for semester_name,semesters in semesters.items() %}
+            <script>
+                let tabData = {};
+            </script>
+            {% for semester_name,grades in semesters.items() %}
                 <a id="{{ 'first-semester' if semester_name=='高一上学期' else '' }}"
                    class="semester-{{ semester_name }}">
                     <h2>
@@ -59,12 +62,12 @@
                             layer.open({
                                 type: 1,
                                 area: ['auto', '100px'],
-                                content: '<a type="button" class="layui-btn layui-btn-radius" href="/test_info/{{semesters[0].test_time}}"' +
-                                    '>{{semesters[0].test_name}}</a>\n' +
-                                    '<a type="button" class="layui-btn layui-btn-radius" href="/test_info/{{semesters[1].test_time}}"' +
-                                    '>{{semesters[1].test_name}}</a>\n' +
-                                    '<a type="button" class="layui-btn layui-btn-radius" href="/test_info/{{semesters[2].test_time}}"' +
-                                    '>{{semesters[2].test_name}}</a>',
+                                content: '<a type="button" class="layui-btn layui-btn-radius" href="/test_info/{{grades[0].test_time}}"' +
+                                    '>{{grades[0].test_name}}</a>\n' +
+                                    '<a type="button" class="layui-btn layui-btn-radius" href="/test_info/{{grades[1].test_time}}"' +
+                                    '>{{grades[1].test_name}}</a>\n' +
+                                    '<a type="button" class="layui-btn layui-btn-radius" href="/test_info/{{grades[2].test_time}}"' +
+                                    '>{{grades[2].test_name}}</a>',
                                 btnAlign: 'c', //按钮居中
                                 shade: 0.2,
                                 yes: function () {
@@ -74,38 +77,52 @@
                         });
                     });
                 </script>
-                <ul class="nav nav-tabs">
-                    {% for semester in semesters %}
-                        <li class="{{ 'active'if semester.is_show else '' }}">
-                            <a href="#panel-{{ semester_name }}-{{ semester.index }}"
-                               data-toggle="tab">{{ semester.test_name }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-                <div class="tab-content">
-                    {% for semester in semesters %}
-                        <div class="tab-pane {{ 'active'if semester.is_show else '' }}"
-                             id="panel-{{ semester_name }}-{{ semester.index }}">
-                            <table class="layui-hide" id="grade_analysis_table_{{ semester.index }}"></table>
-                            <div class="col-md-7 column">
-                                <div id="grade_compared_chart-{{ semester.index }}"
-                                     style="width: 115%; height:430px;
+                <div class="layui-tab layui-tab-brief" lay-filter="{{ semester_name }}">
+                    <ul class="layui-tab-title">
+                        {% for grade in grades %}
+                            <li lay-id="{{ grade.test_name }}"
+                                data-g_id="{{ grade.grade_id }}">{{ grade.test_name }}</li>
+                        {% endfor %}
+                    </ul>
+                    <div class="layui-tab-content">
+                        {% for grade in grades %}
+                            <div class="layui-tab-item">
+                                <table class="layui-hide"
+                                       id="grade_table_{{ grade.grade_id }}"></table>
+                                <div class="layui-col-sm7">
+                                    <div id="grade_compared_chart-{{ grade.grade_id }}"
+                                         style="width: 115%; height:430px;
                                      margin-left: -10%;margin-right: 5%;
                                  "></div>
-                            </div>
-                            <div class="col-md-5 column">
-                                <div id="ranking_radar_chart-{{ semester.index }}"
-                                     style="width: 125%;height:430px;
+                                </div>
+                                <div class="layui-col-sm5">
+                                    <div id="ranking_radar_chart-{{ grade.grade_id }}"
+                                         style="width: 125%;height:430px;
                                      margin-left: -10%;margin-right: 15%;
                                  "></div>
+                                </div>
                             </div>
-                            {#TODO:转用Layui Tab#}
-                            <script>
+                        {% endfor %}
+                    </div>
+                </div>
+                <script>
+                    layui.use('element', function () {
+                        let element = layui.element;
+                        {% for grade in grades %}
+                            tabData['{{ grade.grade_id }}'] = {
+                                'radar': {'data': null, 'load': false},
+                                'compare': {'data': null, 'load': false},
+                                'table': {'data': null, 'load': false}
+                            };
+                        {% endfor %}
+                        element.on('tab({{ semester_name }})', function () {
+                            let gradeID = this.getAttribute('data-g_id');
+                            if (!tabData[gradeID]['table']['load']) {
                                 layui.use('table', function () {
                                     const table = layui.table;
                                     table.render({
-                                        elem: '#grade_analysis_table_{{ semester.index }}'
-                                        , url: '/api/student/grade/analysis/{{ semester.grade_id }}'
+                                        elem: '#grade_table_' + gradeID
+                                        , url: '/api/student/grade/analysis/' + gradeID
                                         , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                         , size: 'sm'
                                         , cols: [[
@@ -120,15 +137,17 @@
                                         ]]
                                     });
                                 });
-                            </script>
-                            <script>
+                                tabData[gradeID]['table']['load'] = true;
+                            }
+                            if (!tabData[gradeID]['radar']['load']) {
                                 $(
                                     function () {
-                                        var chart = echarts.init(
-                                            document.getElementById('grade_compared_chart-{{ semester.index }}'), '{{ theme }}', {renderer: 'canvas'});
+                                        let chart = echarts.init(
+                                            document.getElementById('ranking_radar_chart-' + gradeID),
+                                            '{{ theme }}', {renderer: 'canvas'});
                                         $.ajax({
                                             type: "GET",
-                                            url: "/charts/grade_compared_chart/{{ semester.grade_id }}",
+                                            url: "/charts/ranking_radar_chart/" + gradeID,
                                             dataType: 'json',
                                             success: function (result) {
                                                 chart.setOption(result);
@@ -137,22 +156,19 @@
                                         $(window).resize(function () {
                                             chart.resize();
                                         });
-                                        $('a').click(function () {
-                                            setTimeout(function () {
-                                                chart.resize();
-                                            }, 0)
-                                        });
                                     }
-                                )
-                            </script>
-                            <script>
+                                );
+                                tabData[gradeID]['radar']['load'] = true;
+                            }
+                            if (!tabData[gradeID]['compare']['load']) {
                                 $(
                                     function () {
-                                        const chart = echarts.init(
-                                            document.getElementById('ranking_radar_chart-{{ semester.index }}'), '{{ theme }}', {renderer: 'canvas'});
+                                        let chart = echarts.init(
+                                            document.getElementById('grade_compared_chart-' + gradeID),
+                                            '{{ theme }}', {renderer: 'canvas'});
                                         $.ajax({
                                             type: "GET",
-                                            url: "/charts/ranking_radar_chart/{{ semester.grade_id }}",
+                                            url: "/charts/grade_compared_chart/" + gradeID,
                                             dataType: 'json',
                                             success: function (result) {
                                                 chart.setOption(result);
@@ -161,19 +177,15 @@
                                         $(window).resize(function () {
                                             chart.resize();
                                         });
-                                        $('a').click(function () {
-                                            setTimeout(function () {
-                                                chart.resize();
-                                            }, 0)
-                                        });
                                     }
-                                )
-                            </script>
-                        </div>
-                    {% endfor %}
-                </div>
+                                );
+                                tabData[gradeID]['compare']['load'] = true;
+                            }
+                        });
+                        element.tabChange('{{ semester_name }}', '月考');
+                    });
+                </script>
             {% endfor %}
         </div>
-    </div>
     </div>
 {% endblock %}

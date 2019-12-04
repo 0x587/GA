@@ -3,6 +3,7 @@ from pyecharts import options as opts
 from app.models import *
 from pyecharts.globals import ThemeType
 import Subject
+import Level
 
 
 def test_grade_distributed(test_time: int) -> list:
@@ -133,7 +134,11 @@ def test_student_distributed(test_time: int) -> Bar:
                 )
             ),
             title_opts=opts.TitleOpts(
-                title='学生构成分析'
+                title='学生构成分析',
+                subtitle=Level.get_level_description(),
+                subtitle_textstyle_opts=opts.TextStyleOpts(
+                    font_size=14
+                )
             )
         )
     )

@@ -1,0 +1,70 @@
+{% extends 'guide_base.html' %}
+{% block content %}
+    <div class="nes-container with-title  is-centered layui-col-sm12" style="top: 100px;">
+        <p class="title">
+            Student.
+        </p>
+        <div class="layui-row">
+            <div class="layui-col-sm2">
+                <i class="nes-octocat animate"></i>
+            </div>
+            <div class="layui-col-sm10">
+                <p>
+                    For view your grade report.<br>
+                    Type your student number or name and press Enter.<br>
+                    Input example: 180542、1805、42 、<br>
+                    your full name or a part of your name
+                </p>
+                <div class="nes-field">
+                    <form>
+                        <label for="name_field"></label>
+                        <input type="text" id="name_field" class="nes-input" name="data">
+                        <input class="nes-btn" type="submit" value="Submit">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="nes-table-responsive">
+                <table class="nes-table" id="result-table" lay-filter="result-table"></table>
+            </div>
+        </div>
+        <script>
+            function getQueryVariable(variable) {
+                let query = window.location.search.substring(1);
+                let vars = query.split("&");
+                for (let i = 0; i < vars.length; i++) {
+                    let pair = vars[i].split("=");
+                    if (pair[0] === variable) {
+                        return pair[1];
+                    }
+                }
+                return false;
+            }
+
+            if (getQueryVariable('data') !== null) {
+                layui.use('table', function () {
+                    let table = layui.table;
+                    table.render({
+                        elem: '#result-table'
+                        {#, height: 312#}
+                        , url: '/api/student/query/' + getQueryVariable('data')
+                        , page: true //开启分页
+                        , style: 'background-color: #FFFFFF; color: #851f1f;'
+                        , cols: [[ //表头
+                            {field: 'name', title: 'Name'},
+                            {field: 'class_index', title: 'ClassIndex'},
+                            {field: 'test_id', title: 'TestID'},
+                        ]]
+                    });
+                    //监听行单击事件
+                    table.on('row(result-table)', function (obj) {
+                        console.log(obj.data); //得到当前行数据
+                        window.location.href = '/#'
+                        //TODO 重定向到student page
+                    });
+                });
+            }
+        </script>
+    </div>
+{% endblock %}

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% block title %}
+            {% if title %}{{ title }}{% else %}Welcome to GradeVisualization{% endif %}
+        {% endblock %}
+    </title>
+    <script src="../static/layui/layui.js"></script>
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
+    <link href="https://unpkg.com/nes.css@2.2.1/css/nes.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+</head>
+<body>
+<div class="layui-container">
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+</html>

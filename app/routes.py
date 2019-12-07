@@ -6,6 +6,7 @@ from AnalysisData.Class import class_type, class_highest_ranking, \
 
 from app.chart_routers import *
 from app.api_routers import *
+from app.guide_routes import *
 import Subject
 
 

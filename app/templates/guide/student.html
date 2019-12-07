@@ -42,7 +42,7 @@
                 return false;
             }
 
-            if (getQueryVariable('data') !== null) {
+            if (getQueryVariable('data') !== false) {
                 layui.use('table', function () {
                     let table = layui.table;
                     table.render({

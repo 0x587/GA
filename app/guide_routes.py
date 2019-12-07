@@ -11,4 +11,4 @@ def choose_identity():
 @app.route('/choose_Identity/<string:user_identity>')
 def identity(user_identity: str):
     if user_identity == 'student':
-        return render_template('guide/student.html')
+        return render_template('guide/student_select.html')

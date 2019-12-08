@@ -14,6 +14,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 bootstrap = Bootstrap(app)
 login = LoginManager(app)
+login.login_view = 'login'
 if not app.debug:
     if not os.path.exists('logs'):
         os.mkdir('logs')

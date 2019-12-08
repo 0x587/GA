@@ -2,7 +2,7 @@ from app import app
 from flask import render_template, send_file, redirect
 from class_info import *
 from AnalysisData.Class import class_type, class_highest_ranking, \
-    class_best_subject, class_worse_subject
+    class_best_subject, class_worse_subject, class_grade_distributed
 
 
 @app.route('/')

@@ -60,7 +60,7 @@
                         , cols: [[
                             {field: 'key', title: '', fixed: 'left'},
                             {field: 'chinese', title: '语文'},
-                            {field: 'match', title: '数学'},
+                            {field: 'math', title: '数学'},
                             {field: 'english', title: '英语'},
                             {field: 'physics', title: '物理'},
                             {field: 'chemistry', title: '化学'},
@@ -91,7 +91,7 @@
                         , cols: [[
                             {field: 'key', title: '', fixed: 'left'},
                             {field: 'chinese', title: '语文人数'},
-                            {field: 'match', title: '数学人数'},
+                            {field: 'math', title: '数学人数'},
                             {field: 'english', title: '英语人数'},
                             {field: 'physics', title: '物理人数'},
                             {field: 'chemistry', title: '化学人数'},
@@ -130,7 +130,7 @@
                 //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
                 layui.use('element', function () {
                     let element = layui.element;
-                    const subjects = ['chinese', 'match', 'english', 'physics', 'chemistry', 'biology'];
+                    const subjects = ['chinese', 'math', 'english', 'physics', 'chemistry', 'biology'];
                     for (let i = 0; i < subjects.length; i++) {
                         element.tabAdd('compare', {
                             title: subjects[i]

@@ -1,8 +1,9 @@
-from app.models import Class, Student, Test, StudentGrade
+from app.models import Class, Student, Test, StudentGrade, Teacher
 from app import db
 from time import time
 import xlrd
 import os
+import re
 
 
 def check_personnel_adjustments(workbook):
@@ -81,11 +82,11 @@ def load_grade(work_file: dict, workbook):
             new_grade.test_time = os.path.splitext(work_file['Name'])[0][22:30]
             new_grade.chinese = my_filter(work_row[worksheet.row_values(0).index('语文')])
             new_grade.chinese_ranking = my_filter(work_row[worksheet.row_values(0).index('语文') + 1])
-            new_grade.match = my_filter(work_row[worksheet.row_values(0).index('数学')])
-            new_grade.match_ranking = my_filter(work_row[worksheet.row_values(0).index('数学') + 1])
+            new_grade.math = my_filter(work_row[worksheet.row_values(0).index('数学')])
+            new_grade.math_ranking = my_filter(work_row[worksheet.row_values(0).index('数学') + 1])
             new_grade.english = my_filter(work_row[worksheet.row_values(0).index('英语')])
             new_grade.english_ranking = my_filter(work_row[worksheet.row_values(0).index('英语') + 1])
-            new_grade.total = new_grade.chinese + new_grade.match + new_grade.english
+            new_grade.total = new_grade.chinese + new_grade.math + new_grade.english
             if str(new_grade.subject) == '理科':
                 new_grade.physics = my_filter(work_row[worksheet.row_values(0).index('物理')])
                 new_grade.chemistry = my_filter(work_row[worksheet.row_values(0).index('化学')])
@@ -106,6 +107,36 @@ def load_grade(work_file: dict, workbook):
     db.session.commit()
 
 
+def bind_teacher(current_file_info: dict, current_book):
+    worksheet = current_book.sheet_by_name('统计表')
+    test_time = os.path.splitext(current_file_info['Name'])[0][22:30]
+    # 每次遍历一个班级
+    for i in range(worksheet.ncols):
+        # 寻找有效列
+        col = worksheet.col_values(i)
+        if str(col[1]).startswith('1'):
+            class_index = str(worksheet.col_values(i)[1])[0:4]
+            grades = StudentGrade.query.filter_by(test_time=test_time, class_index=class_index).all()
+            # TODO:query不all()直接迭代是否可以提高速度？
+            for name in col:
+                if str(name).isalpha():
+                    results = re.findall(u"[\u4e00-\u9fa5]+", worksheet.col_values(0)[col.index(name)])
+                    if int(class_index) in range(1801, 1818):
+                        subject = results[0]
+                    else:
+                        subject = results[-1]
+                    if not Teacher.query.filter_by(teacher_name=str(name)).first():
+                        teacher = Teacher()
+                        teacher.teacher_name = str(name)
+                        teacher.subject = subject
+                        db.session.add(teacher)
+                    else:
+                        teacher = Teacher.query.filter_by(teacher_name=str(name)).first()
+                    for grade in grades:
+                        teacher.student_grades.append(grade)
+    db.session.commit()
+
+
 def load_file(current_file_info: dict):
     stime = time()
     if current_file_info['Name'][15] == '1':
@@ -116,4 +147,5 @@ def load_file(current_file_info: dict):
     current_book = xlrd.open_workbook(current_file_info['Root'])
     check_personnel_adjustments(current_book)
     load_grade(current_file_info, current_book)
+    bind_teacher(current_file_info, current_book)
     print('Spend %f S' % (time() - stime))

@@ -9,9 +9,9 @@ def must_subject(include_total: bool = True) -> list:
     :rtype: list
     """
     if include_total:
-        return ['chinese', 'match', 'english', 'total']
+        return ['chinese', 'math', 'english', 'total']
     else:
-        return ['chinese', 'match', 'english']
+        return ['chinese', 'math', 'english']
 
 
 def li_subject() -> list:
@@ -80,7 +80,7 @@ def en2cn(subject: str) -> str:
     """
     if subject == 'chinese':
         return '语文'
-    elif subject == 'match':
+    elif subject == 'math':
         return '数学'
     elif subject == 'english':
         return '数学'

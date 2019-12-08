@@ -15,7 +15,7 @@ def sort_class_ranking():
                 obj.test = test
                 obj.total = sum([v['total'] for v in value['grades']]) / len(value['grades'])
                 obj.chinese = sum([v['chinese'] for v in value['grades']]) / len(value['grades'])
-                obj.match = sum([v['match'] for v in value['grades']]) / len(value['grades'])
+                obj.math = sum([v['math'] for v in value['grades']]) / len(value['grades'])
                 obj.english = sum([v['english'] for v in value['grades']]) / len(value['grades'])
                 if value['grades'][0]['subject'] == '理科':
                     obj.physics = sum([v['physics'] for v in value['grades']]) / len(value['grades'])
@@ -37,11 +37,11 @@ def sort_class_ranking():
                     test_time=test.test_time,
                     subject=subject).order_by(ClassAverageGrade.chinese).all()):
                 g.chinese_ranking = 17 - i
-            # Match
+            # Math
             for i, g in enumerate(ClassAverageGrade.query.filter_by(
                     test_time=test.test_time,
-                    subject=subject).order_by(ClassAverageGrade.match).all()):
-                g.match_ranking = 17 - i
+                    subject=subject).order_by(ClassAverageGrade.math).all()):
+                g.math_ranking = 17 - i
             # English
             for i, g in enumerate(ClassAverageGrade.query.filter_by(
                     test_time=test.test_time,

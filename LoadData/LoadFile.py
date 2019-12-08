@@ -81,11 +81,11 @@ def load_grade(work_file: dict, workbook):
             new_grade.test_time = os.path.splitext(work_file['Name'])[0][22:30]
             new_grade.chinese = my_filter(work_row[worksheet.row_values(0).index('语文')])
             new_grade.chinese_ranking = my_filter(work_row[worksheet.row_values(0).index('语文') + 1])
-            new_grade.match = my_filter(work_row[worksheet.row_values(0).index('数学')])
-            new_grade.match_ranking = my_filter(work_row[worksheet.row_values(0).index('数学') + 1])
+            new_grade.math = my_filter(work_row[worksheet.row_values(0).index('数学')])
+            new_grade.math_ranking = my_filter(work_row[worksheet.row_values(0).index('数学') + 1])
             new_grade.english = my_filter(work_row[worksheet.row_values(0).index('英语')])
             new_grade.english_ranking = my_filter(work_row[worksheet.row_values(0).index('英语') + 1])
-            new_grade.total = new_grade.chinese + new_grade.match + new_grade.english
+            new_grade.total = new_grade.chinese + new_grade.math + new_grade.english
             if str(new_grade.subject) == '理科':
                 new_grade.physics = my_filter(work_row[worksheet.row_values(0).index('物理')])
                 new_grade.chemistry = my_filter(work_row[worksheet.row_values(0).index('化学')])

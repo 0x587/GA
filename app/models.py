@@ -148,6 +148,9 @@ class ClassAverageGrade(GradeBase):
     class_index = db.Column(db.Integer, db.ForeignKey('classes.index'))
     class_ = db.relationship('Class', backref='class_average_grades')
 
+    teacher_ID = db.Column(db.Integer, db.ForeignKey('teachers.ID'))
+    teacher = db.relationship('Teacher', backref='student_grades')
+
     def __init__(self, class_index: int):
         self.class_ = Class.query.filter_by(index=class_index).first()
 
@@ -178,6 +181,9 @@ class StudentGrade(GradeBase):
 
     student_ID = db.Column(db.Integer, db.ForeignKey('students.ID'))
     student = db.relationship('Student', backref='student_grades')
+
+    teacher_ID = db.Column(db.Integer, db.ForeignKey('teachers.ID'))
+    teacher = db.relationship('Teacher', backref='student_grades')
 
     class_index = db.Column(db.Integer)
 

@@ -53,15 +53,16 @@
                         elem: '#result-table'
                         {#, height: 312#}
                         , url: '/api/student/query/' + getQueryVariable('data')
-                        , page: true //开启分页
-                        , style: 'background-color: #FFFFFF; color: #851f1f;'
+                        , page: {
+                            layout: [ 'prev', 'page', 'next','count']
+                            , groups: 3
+                        }
                         , cols: [[ //表头
                             {field: 'name', title: 'Name'},
                             {field: 'class_index', title: 'ClassIndex'},
                             {field: 'test_id', title: 'TestID'},
                         ]]
                     });
-                    //监听行单击事件
                     table.on('row(result-table)', function (obj) {
                         console.log(obj.data); //得到当前行数据
                         window.location.href = '/#'

@@ -44,9 +44,9 @@ def class_history_grade(class_index: int) -> Timeline:
             ClassAverageGrade.test_time == test.test_time,
             ClassAverageGrade.class_index == class_index,
         ).first()
-        grades = [cag.chinese, cag.match, cag.english,
+        grades = [cag.chinese, cag.math, cag.english,
                   cag.physics, cag.chemistry, cag.biology, ]
-        rankings = [cag.chinese_ranking, cag.match_ranking, cag.english_ranking,
+        rankings = [cag.chinese_ranking, cag.math_ranking, cag.english_ranking,
                     cag.physics_ranking, cag.chemistry_ranking, cag.biology_ranking, ]
         grade_bar = (
             Bar(init_opts=opts.InitOpts(theme=ThemeType.VINTAGE))

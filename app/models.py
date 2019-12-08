@@ -24,6 +24,14 @@ class Student(db.Model):
         return self.student_name
 
 
+class Teacher(db.Model):
+    __tablename__ = "teachers"
+
+    ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    teacher_name = db.Column(db.String(8))
+    subject = db.Column(db.String(8))
+
+
 class Test(db.Model):
     __tablename__ = 'tests'
 

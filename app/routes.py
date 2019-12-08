@@ -1,11 +1,12 @@
 from app import app
-from flask import render_template, send_file
+from flask import render_template, send_file, redirect
 from class_info import *
 from AnalysisData.Class import class_type, class_highest_ranking, \
     class_best_subject, class_worse_subject
 
 from app.chart_routers import *
 from app.api_routers import *
+from app.guide_routes import *
 import Subject
 
 
@@ -75,6 +76,12 @@ def student_info(student_id):
                            ],
                            semesters=grades,
                            )
+
+
+@app.route('/student_info/<string:student_name>')
+def student_info_redirect(student_name: str):
+    student_id = db.session.query(Student.ID).filter_by(student_name=student_name).first()[0]
+    return redirect('/student_info/{}'.format(student_id))
 
 
 @app.route('/test_info/<int:test_time>')

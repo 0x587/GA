@@ -1,7 +1,7 @@
 from app import app
 from app.models import *
 from AnalysisData.Test import test_grade_distributed
-
+from flask import request
 import json
 import Subject
 import GradeRanking
@@ -87,4 +87,38 @@ def test_total_table_data(test_time: int):
 @app.route('/api/test/data/distributed/<int:test_time>')
 def test_distributed_table_data(test_time: int):
     result = {'code': 0, 'msg': '', 'data': test_grade_distributed(test_time)}
+    return json.dumps(result)
+
+
+@app.route('/api/student/query/<query_input>')
+def query_student(query_input: int or str):
+    result = {'code': 0, 'msg': '', 'count': 0, 'data': []}
+    limit = int(request.args.get('limit'))
+    offset = (int(request.args.get('page')) - 1) * limit
+    if query_input.isdigit() or type(query_input) is int:
+        # query_input data is number
+        result['count'] = db.session.query(
+            db.func.count(Student.test_id)
+        ).filter(Student.test_id.like('%{}%'.format(query_input))).scalar()
+        students = Student.query.filter(
+            Student.test_id.like(
+                '%{}%'.format(query_input)
+            )
+        ).limit(limit).offset(offset).all()
+    elif type(query_input) is str:
+        result['count'] = db.session.query(
+            db.func.count(Student.test_id)
+        ).filter(Student.student_name.like('%{}%'.format(query_input))).scalar()
+        students = Student.query.filter(
+            Student.student_name.like(
+                '%{}%'.format(query_input))
+        ).limit(limit).offset(offset).all()
+    else:
+        students = []
+    for student in students:
+        result['data'].append({
+            'name': student.student_name,
+            'class_index': student.class_index,
+            'test_id': student.test_id,
+        })
     return json.dumps(result)

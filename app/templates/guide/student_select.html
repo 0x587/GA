@@ -1,0 +1,75 @@
+{% extends 'guide_base.html' %}
+{% block content %}
+    <div class="nes-container with-title  is-centered layui-col-sm12" style="top: 100px;">
+        <p class="title">
+            Student.
+        </p>
+        <div class="layui-row">
+            <div class="layui-col-sm2">
+                <i class="nes-octocat animate"></i>
+            </div>
+            <div class="layui-col-sm10">
+                <p style="margin-bottom: 0.1rem">Type your search information and press Enter.</p>
+                <p style="margin-bottom: 0.5rem">输入你的查询信息后摁回车</p>
+                <p style="margin-bottom: 0.1rem">To view your grade report.</p>
+                <p style="margin-bottom: 0.5rem">以查看你的成绩报告</p>
+                <p style="margin-bottom: 0.1rem">You can enter part or full name or student number</p>
+                <p style="margin-bottom: 0.5rem">你可以输入一部分或完整的名字或学号</p>
+                <div class="nes-field">
+                    <form>
+                        <label for="name_field"></label>
+                        <input type="text" id="name_field" class="nes-input" name="data"
+                               placeholder="like: 180542、张三">
+                        <input class="nes-btn" type="submit" value="Submit">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="nes-table-responsive">
+                <table class="nes-table" id="result-table" lay-filter="result-table"></table>
+            </div>
+        </div>
+        <script>
+            function getQueryVariable(variable) {
+                let query = window.location.search.substring(1);
+                let vars = query.split("&");
+                for (let i = 0; i < vars.length; i++) {
+                    let pair = vars[i].split("=");
+                    if (pair[0] === variable) {
+                        if (pair[1] === '') {
+                            return false
+                        }
+                        return pair[1];
+                    }
+                }
+                return false;
+            }
+
+            if (getQueryVariable('data') !== false) {
+                layui.use('table', function () {
+                    let table = layui.table;
+                    table.render({
+                        elem: '#result-table'
+                        {#, height: 312#}
+                        , url: '/api/student/query/' + getQueryVariable('data')
+                        , page: {
+                            layout: ['prev', 'page', 'next', 'count']
+                            , groups: 3
+                        }
+                        , cols: [[ //表头
+                            {field: 'name', title: 'Name'},
+                            {field: 'class_index', title: 'ClassIndex'},
+                            {field: 'test_id', title: 'TestID'},
+                        ]]
+                    });
+                    table.on('row(result-table)', function (obj) {
+                        let StudentName = obj.data.name;
+                        window.location.href = '/student_info/' + StudentName
+                        //TODO 重定向到student page
+                    });
+                });
+            }
+        </script>
+    </div>
+{% endblock %}

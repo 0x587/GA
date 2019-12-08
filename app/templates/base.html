@@ -6,6 +6,7 @@
     <script type="text/javascript" src="../static/js/vintage.js"></script>
     <script src="../static/layui/layui.js"></script>
     <link rel="stylesheet" href="../static/layui/css/layui.css">
+    <script src="https://kit.fontawesome.com/8c0dec4046.js" crossorigin="anonymous"></script>
 {% endblock %}
 {% block title %}
     {% if title %}{{ title }}{% else %}Welcome to GradeVisualization{% endif %}
@@ -27,6 +28,22 @@
             </dl>
         </li>
         <li class="layui-nav-item"><a href="">社区</a></li>
+        {% if not current_user.is_anonymous %}
+            <li class="layui-nav-item">
+                <a href=""><img src="../static/user.jpg" class="layui-nav-img">{{ current_user.username }}</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">修改信息</a></dd>
+                    <dd><a href="">安全管理</a></dd>
+                    <dd><a href="/logout">退出登录</a></dd>
+                </dl>
+            </li>
+        {% else %}
+            <li class="layui-nav-item">
+                <a href="/login">
+                    <i class="fas fa-user-slash"></i>登入
+                </a>
+            </li>
+        {% endif %}
     </ul>
     <script>
         //注意：导航 依赖 element 模块，否则无法进行功能性操作

@@ -1,13 +1,36 @@
 from app import app
-from flask import render_template, send_file, redirect
+from flask import render_template, send_file, redirect, request, url_for
+from flask_login import current_user, login_user, logout_user, login_required
 from class_info import *
 from AnalysisData.Class import class_type, class_highest_ranking, \
     class_best_subject, class_worse_subject, class_grade_distributed
+from User.UserModel import User
 
 
 @app.route('/')
 def hello_world():
     return render_template('welcome.html')
+
+
+@app.route('/login')
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('hello_world'))
+    if not request.args:
+        return render_template('login.html')
+    else:
+        user = User.query.filter_by(username=request.args.get('username')).first()
+        if user is None or not user.check_password(request.args.get('password')):
+            return redirect(url_for('login'))
+        else:
+            login_user(user, remember=True)
+            return redirect(url_for('hello_world'))
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('hello_world'))
 
 
 @app.route('/class_info/<int:class_index>')

@@ -4,11 +4,6 @@ from class_info import *
 from AnalysisData.Class import class_type, class_highest_ranking, \
     class_best_subject, class_worse_subject
 
-from app.chart_routers import *
-from app.api_routers import *
-from app.guide_routes import *
-import Subject
-
 
 @app.route('/')
 def hello_world():
@@ -97,7 +92,7 @@ def test_info(test_time):
 
 @app.route('/favicon.ico')
 def favicon():
-    return send_file('static/favicon.ico')
+    return send_file('../static/favicon.ico')
 
 
 @app.errorhandler(404)

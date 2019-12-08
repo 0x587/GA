@@ -1,6 +1,5 @@
-from app import app
-from flask import render_template, request
-from app.api_routers import *
+from flask import render_template
+from app.Routes.api_routers import *
 
 
 @app.route('/choose_Identity')

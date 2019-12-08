@@ -16,4 +16,4 @@ if not app.debug:
     if not os.path.exists('logs'):
         os.mkdir('logs')
 
-from app import models, routes
+from app import models, Routes

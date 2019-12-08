@@ -54,7 +54,7 @@
                         {#, height: 312#}
                         , url: '/api/student/query/' + getQueryVariable('data')
                         , page: {
-                            layout: [ 'prev', 'page', 'next','count']
+                            layout: ['prev', 'page', 'next', 'count']
                             , groups: 3
                         }
                         , cols: [[ //表头
@@ -64,8 +64,8 @@
                         ]]
                     });
                     table.on('row(result-table)', function (obj) {
-                        console.log(obj.data); //得到当前行数据
-                        window.location.href = '/#'
+                        let StudentName = obj.data.name;
+                        window.location.href = '/student_info/' + StudentName
                         //TODO 重定向到student page
                     });
                 });

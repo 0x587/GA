@@ -122,3 +122,24 @@ def query_student(query_input: int or str):
             'test_id': student.test_id,
         })
     return json.dumps(result)
+
+
+@app.route('/api/teacher/query/<string:query_input>')
+def query_teacher(query_input: str):
+    result = {'code': 0, 'msg': '', 'count': 0, 'data': []}
+    limit = int(request.args.get('limit'))
+    offset = (int(request.args.get('page')) - 1) * limit
+    result['count'] = db.session.query(
+        db.func.count(Teacher.teacher_name)
+    ).filter(Teacher.teacher_name.like('%{}%'.format(query_input))).scalar()
+
+    teachers = Teacher.query.filter(
+        Teacher.teacher_name.like(
+            '%{}%'.format(query_input))
+    ).limit(limit).offset(offset).all()
+
+    for teacher in teachers:
+        result['data'].append({
+            'name': teacher.teacher_name,
+        })
+    return json.dumps(result)

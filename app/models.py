@@ -1,6 +1,11 @@
 from app import db
 from Level import avg2level
 
+teacher2student_grade = db.Table(
+    'teacher2student_grade',
+    db.Column('teacher_id', db.Integer, db.ForeignKey('teachers.ID'), primary_key=True),
+    db.Column('student_grade_id', db.Integer, db.ForeignKey('student_grades.ID'), primary_key=True))
+
 
 class Class(db.Model):
     __tablename__ = "classes"
@@ -30,6 +35,8 @@ class Teacher(db.Model):
     ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     teacher_name = db.Column(db.String(8))
     subject = db.Column(db.String(8))
+    student_grades = db.relationship(
+        'StudentGrade', secondary=teacher2student_grade, backref=db.backref('teachers'))
 
 
 class Test(db.Model):
@@ -148,9 +155,6 @@ class ClassAverageGrade(GradeBase):
     class_index = db.Column(db.Integer, db.ForeignKey('classes.index'))
     class_ = db.relationship('Class', backref='class_average_grades')
 
-    teacher_ID = db.Column(db.Integer, db.ForeignKey('teachers.ID'))
-    teacher = db.relationship('Teacher', backref='class_grades')
-
     def __init__(self, class_index: int):
         self.class_ = Class.query.filter_by(index=class_index).first()
 
@@ -181,9 +185,6 @@ class StudentGrade(GradeBase):
 
     student_ID = db.Column(db.Integer, db.ForeignKey('students.ID'))
     student = db.relationship('Student', backref='student_grades')
-
-    teacher_ID = db.Column(db.Integer, db.ForeignKey('teachers.ID'))
-    teacher = db.relationship('Teacher', backref='student_grades')
 
     class_index = db.Column(db.Integer)
 

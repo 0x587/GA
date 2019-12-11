@@ -45,6 +45,7 @@ def check_personnel_adjustments(workbook):
                     else:
                         old_class_index = query_result[0].class_index
                         query_result[0].class_index = class_index
+                        query_result[0].test_id = int(new_student['test_id'])
                         db.session.commit()
                         print('流动管理: {}班新增{},旧班级{}'.format(class_index,
                                                            new_student['student_name'], old_class_index))

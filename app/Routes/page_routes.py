@@ -9,7 +9,13 @@ from User.UserModel import User
 
 @app.route('/')
 def hello_world():
-    return render_template('welcome.html')
+    if current_user.is_anonymous:
+        return redirect(url_for('choose_identity'))
+    else:
+        if current_user.type == 'student':
+            return redirect('/student_info/{}'.format(current_user.username))
+        if current_user.type == 'teacher':
+            return 'teacher page'
 
 
 @app.route('/login')
@@ -30,7 +36,7 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('hello_world'))
+    return 'Bye'
 
 
 @app.route('/class_info/<int:class_index>')

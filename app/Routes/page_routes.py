@@ -113,9 +113,10 @@ def test_info(test_time):
                            theme='vintage')
 
 
-@app.route('/favicon.ico')
-def favicon():
-    return send_file('../static/favicon.ico')
+# 路径问题，暂时启用
+# @app.route('/favicon.ico')
+# def favicon():
+#     return send_file('../static/favicon.ico')
 
 
 @app.errorhandler(404)

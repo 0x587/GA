@@ -102,6 +102,13 @@ def student_info(student_id):
                            )
 
 
+@app.route('/teacher_info/<int:teacher_id>')
+def teacher_info(teacher_id: int):
+    teacher = Teacher.query.filter_by(ID=teacher_id).first()
+    return render_template('teacher_info.html',
+                           teacher_name=teacher.teacher_name)
+
+
 @app.route('/student_info/<string:student_name>')
 def student_info_redirect(student_name: str):
     student_id = db.session.query(Student.ID).filter_by(student_name=student_name).first()[0]

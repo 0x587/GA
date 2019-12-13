@@ -119,6 +119,11 @@ def test_info(test_time):
                            theme='vintage')
 
 
+@app.route('/search')
+def search():
+    return render_template('search.html')
+
+
 # 路径问题，暂时启用
 # @app.route('/favicon.ico')
 # def favicon():

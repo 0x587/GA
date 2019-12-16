@@ -9,8 +9,9 @@ import Subject
 def grade_query(grade_id: int):
     result = {'code': 200, 'msg': 'Request succeeded', 'data': {}}
     grade = StudentGrade.query.filter_by(ID=grade_id).first()
-    grade: StudentGrade
-    includes = request.args.get('includes').split(',')
+    includes = []
+    if request.args.get('includes'):
+        includes = request.args.get('includes').split(',')
     if not grade:
         result['code'] = 404
         result['msg'] = 'This GradeID does not exist'

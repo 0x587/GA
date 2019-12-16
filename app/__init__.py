@@ -19,5 +19,8 @@ if not app.debug:
     if not os.path.exists('logs'):
         os.mkdir('logs')
 
+from UniApp.uniapp import uniapp
+app.register_blueprint(uniapp)
+
 from app import models, Routes
 import User.UserModel

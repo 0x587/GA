@@ -28,7 +28,7 @@ def student_grade_analysis_table_data(grade_id: int):
     for subject in Subject.li_all_subject():
         result['data'][0][subject] = grade.grade_dict()[subject]
         result['data'][1][subject] = class_grade.grade_dict()[subject]
-        result['data'][2][subject] = GradeRanking.grade2ranking_for_class(grade_id, subject)
+        result['data'][2][subject] = GradeRanking.grade2ranking_with_grade_for_class(grade_id, subject)
         result['data'][3][subject] = test_avg_grade.grade_dict()[subject]
         result['data'][4][subject] = GradeRanking.grade2ranking_with_grade(grade_id, subject)
         result['data'][5][subject] = 'To be developed'

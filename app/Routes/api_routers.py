@@ -143,3 +143,15 @@ def query_teacher(query_input: str):
             'name': teacher.teacher_name,
         })
     return json.dumps(result)
+
+
+@app.route('/api/test/all')
+def all_test():
+    tests = Test.query.order_by(Test.test_time).all()
+    results = []
+    for test in tests:
+        info = dict()
+        info['test_name'] = test.test_name
+        info['test_time'] = test.test_time
+        results.append(info)
+    return json.dumps(results)

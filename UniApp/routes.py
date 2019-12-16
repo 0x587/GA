@@ -11,7 +11,6 @@ def grade_query(grade_id: int):
     grade = StudentGrade.query.filter_by(ID=grade_id).first()
     grade: StudentGrade
     includes = request.args.get('includes').split(',')
-    print(includes)
     if not grade:
         result['code'] = 404
         result['msg'] = 'This GradeID does not exist'

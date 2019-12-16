@@ -21,7 +21,8 @@ def grade_query(grade_id: int):
             result['data']['ranking'] = {}
         for subject in Subject.li_all_subject():
             result['data']['grade'][subject] = grade.__dict__[subject]
-            result['data']['ranking'][subject] = grade.__dict__[subject + '_ranking']
+            if 'ranking' in includes:
+                result['data']['ranking'][subject] = grade.__dict__[subject + '_ranking']
     return json.dumps(result)
 
 

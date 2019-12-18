@@ -83,7 +83,7 @@ def en2cn(subject: str) -> str:
     elif subject == 'math':
         return '数学'
     elif subject == 'english':
-        return '数学'
+        return '英语'
     elif subject == 'physics':
         return '物理'
     elif subject == 'chemistry':

@@ -23,3 +23,4 @@ if not app.debug:
 
 from app import models, Routes
 import User.UserModel
+import admin

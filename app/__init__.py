@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
+from flask_admin import Admin
 from my_config import Config
 import os
 
@@ -15,6 +16,7 @@ migrate = Migrate(app, db)
 bootstrap = Bootstrap(app)
 login = LoginManager(app)
 login.login_view = 'login'
+admin = Admin(app, name='GA', template_mode='bootstrap3')
 if not app.debug:
     if not os.path.exists('logs'):
         os.mkdir('logs')

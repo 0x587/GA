@@ -39,6 +39,7 @@
             </div>
         </div>
     </div>
+    // 排名走势
     <div class="layui-row">
         <blockquote class="layui-elem-quote" id="compare">各班均分对比</blockquote>
         <div class="layui-tab layui-tab-brief" lay-filter="compare">
@@ -52,6 +53,7 @@
             layui.use('element', function () {
                 let element = layui.element;
                 const subjects = ['chinese', 'math', 'english', 'physics', 'chemistry', 'biology'];
+                const subjects_zh = ['语文', '数学', '英语', '物理', '化学', '生物'];
                 for (let i = 0; i < subjects.length; i++) {
                     element.tabAdd('compare', {
                         title: subjects[i]
@@ -64,7 +66,6 @@
                 charts = [];
                 $(
                     function () {
-
                         for (let i = 0; i < subjects.length; i++) {
                             charts[i] = echarts.init(
                                 document.getElementById('compare-subject'.replace('subject', subjects[i])),

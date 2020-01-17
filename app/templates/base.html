@@ -2,94 +2,48 @@
 {% block head %}
     {{ super() }}
     <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
-    <script type="text/javascript" src="../static/js/echarts.min.js"></script>
+    <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
     <script type="text/javascript" src="../static/js/vintage.js"></script>
-    <script src="../static/layui/layui.js"></script>
-    <link rel="stylesheet" href="../static/layui/css/layui.css">
+    <script src="https://www.layuicdn.com/layui/layui.js"></script>
+    <link rel="stylesheet" href="https://www.layuicdn.com/layui/css/layui.css">
+    <script src="https://kit.fontawesome.com/8c0dec4046.js" crossorigin="anonymous"></script>
 {% endblock %}
 {% block title %}
     {% if title %}{{ title }}{% else %}Welcome to GradeVisualization{% endif %}
 {% endblock %}
 {% block body_attribs %}
-    background="../static/background.jpg"
+    background="https://zhihu-girls.oss-cn-shenzhen.aliyuncs.com/background.jpg"
 {% endblock %}
 {% block navbar %}
-    <nav class="navbar navbar-default" role="navigation">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1"><span class="sr-only">Toggle navigation</span><span
-                    class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
-            <a class="navbar-brand" href="/">GradeVisualization</a>
-        </div>
+    <ul class="layui-nav layui-bg-cyan">
+        <li class="layui-nav-item"><a href="/"><strong>GradeVisualization</strong></a></li>
+        <li class="layui-nav-item layui-this"><a href="">Your Page</a></li>
+        <li class="layui-nav-item"><a href="">Null</a></li>
+        <li class="layui-nav-item"><a href="">Null</a></li>
+        {% if not current_user.is_anonymous %}
+            <li class="layui-nav-item">
+                <a href=""><img src="../static/user.jpg" class="layui-nav-img">{{ current_user.username }}</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">修改信息</a></dd>
+                    <dd><a href="">安全管理</a></dd>
+                    <dd><a href="/logout">退出登录</a></dd>
+                </dl>
+            </li>
+        {% else %}
+            <li class="layui-nav-item">
+                <a href="/login">
+                    <i class="fas fa-user-slash"></i>登入
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+    <script>
+        //注意：导航 依赖 element 模块，否则无法进行功能性操作
+        layui.use('element', function () {
+            var element = layui.element;
+        });
+    </script>
 
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li class="active">
-                    <a href="#">Link</a>
-                </li>
-                <li>
-                    <a href="#">Link</a>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown<strong
-                            class="caret"></strong></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="#">Action</a>
-                        </li>
-                        <li>
-                            <a href="#">Another action</a>
-                        </li>
-                        <li>
-                            <a href="#">Something else here</a>
-                        </li>
-                        <li class="divider">
-                        </li>
-                        <li>
-                            <a href="#">Separated link</a>
-                        </li>
-                        <li class="divider">
-                        </li>
-                        <li>
-                            <a href="#">One more separated link</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <form class="navbar-form navbar-left" role="search">
-                <div class="form-group">
-                    <input type="text" class="form-control"/>
-                </div>
-                <button type="submit" class="btn btn-default">Submit</button>
-            </form>
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="#">Login</a>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown<strong
-                            class="caret"></strong></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="#">Action</a>
-                        </li>
-                        <li>
-                            <a href="#">Another action</a>
-                        </li>
-                        <li>
-                            <a href="#">Something else here</a>
-                        </li>
-                        <li class="divider">
-                        </li>
-                        <li>
-                            <a href="#">Separated link</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-
-    </nav>
 {% endblock %}
 {% block content %}
     <div class="container">

@@ -65,9 +65,9 @@ def student_grade_compared(student_grade: StudentGrade) -> Bar:
     bar = (
         Bar(init_opts=opts.InitOpts(theme=ThemeType.VINTAGE))
             .add_xaxis(subjects)
-            .add_yaxis('student_grade', data['student_grade'])
-            .add_yaxis('average_grade', data['average_grade'])
-            .add_yaxis('high_grade', data['high_grade'])
+            .add_yaxis('本次成绩', data['student_grade'])
+            .add_yaxis('平均分', data['average_grade'])
+            .add_yaxis('高分线', data['high_grade'])
             .set_global_opts(title_opts=opts.TitleOpts('成绩对比图'))
     )
     return bar
@@ -107,17 +107,48 @@ def student_grade_radar(student_grade: StudentGrade) -> Radar:
         )
             .set_global_opts(title_opts=opts.TitleOpts('名次雷达图'), )
             .set_series_opts()
-            .add('student_ranking', [data['student_ranking']], color='#d7ab82',
+            .add('本次排名', [data['student_ranking']], color='#d7ab82',
                  linestyle_opts=opts.LineStyleOpts(width=2.5),
                  label_opts=opts.LabelOpts(is_show=True, font_size=14),
                  tooltip_opts=opts.TooltipOpts(is_show=False))
-            .add('average_ranking', [data['average_ranking']], color='#919e8b',
+            .add('平均排名', [data['average_ranking']], color='#919e8b',
                  linestyle_opts=opts.LineStyleOpts(width=2.5),
                  label_opts=opts.LabelOpts(is_show=True, font_size=14),
                  tooltip_opts=opts.TooltipOpts(is_show=False))
-            .add('high_ranking', [data['high_ranking']], color='#d87c7c',
+            .add('高分线排名', [data['high_ranking']], color='#d87c7c',
                  linestyle_opts=opts.LineStyleOpts(width=2.5),
                  label_opts=opts.LabelOpts(is_show=True, font_size=14),
                  tooltip_opts=opts.TooltipOpts(is_show=False))
     )
     return radar
+
+
+def student_history_ranking(student_id: int) -> dict:
+    result = {}
+    result_chart = {}
+    grades = StudentGrade.query.filter_by(
+        student_ID=student_id, subject='理科').order_by(StudentGrade.test_time).all()
+    test_names = [t.test_name for t in Test.query.order_by(Test.test_time).all()]
+    print(test_names)
+    for subject in Subject.li_all_subject():
+        result[subject] = []
+        for grade in grades:
+            grade: StudentGrade
+            result[subject].append(grade.__dict__[subject + '_ranking'])
+    for subject in Subject.li_all_subject():
+        line = (
+            Line()
+                .add_xaxis(test_names)
+                .add_yaxis(
+                '排名',
+                result[subject],
+                markline_opts=opts.MarkLineOpts(data=[opts.MarkLineItem(type_="average")]), )
+                .set_global_opts(
+                title_opts=opts.TitleOpts(
+                    title=Subject.en2cn(subject) + '科历次成绩走势',
+                    subtitle='虚线为平均排名'
+                ),
+            )
+        )
+        result_chart[subject] = line
+    return result_chart

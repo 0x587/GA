@@ -9,9 +9,9 @@ def must_subject(include_total: bool = True) -> list:
     :rtype: list
     """
     if include_total:
-        return ['chinese', 'match', 'english', 'total']
+        return ['chinese', 'math', 'english', 'total']
     else:
-        return ['chinese', 'match', 'english']
+        return ['chinese', 'math', 'english']
 
 
 def li_subject() -> list:
@@ -80,10 +80,10 @@ def en2cn(subject: str) -> str:
     """
     if subject == 'chinese':
         return '语文'
-    elif subject == 'match':
+    elif subject == 'math':
         return '数学'
     elif subject == 'english':
-        return '数学'
+        return '英语'
     elif subject == 'physics':
         return '物理'
     elif subject == 'chemistry':
@@ -96,5 +96,7 @@ def en2cn(subject: str) -> str:
         return '历史'
     elif subject == 'geography':
         return '地理'
+    elif subject == 'total':
+        return '总分'
     else:
-        raise KeyError('This subject is no exist')
+        raise KeyError('This subject is no exist:{}'.format(subject))

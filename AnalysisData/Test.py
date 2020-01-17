@@ -1,8 +1,9 @@
-from pyecharts.charts import Bar
+from pyecharts.charts import Bar, Pie
 from pyecharts import options as opts
 from app.models import *
 from pyecharts.globals import ThemeType
 import Subject
+import Level
 
 
 def test_grade_distributed(test_time: int) -> list:
@@ -90,7 +91,7 @@ def test_avg_grade_compare(test_time: int) -> dict:
                     opts.DataZoomOpts(type_='slider', range_start=5, range_end=55),
                     opts.DataZoomOpts(type_='inside')
                 ],
-                title_opts=opts.TitleOpts(title='各班{}均分对比图'.format(subject))
+                title_opts=opts.TitleOpts(title='各班{}均分对比图'.format(Subject.en2cn(subject)))
 
             )
                 .extend_axis(
@@ -104,3 +105,76 @@ def test_avg_grade_compare(test_time: int) -> dict:
         )
         result[subject] = chart
     return result
+
+
+def test_student_distributed(test_time: int) -> Bar:
+    grades = StudentGrade.query.filter_by(test_time=test_time, subject='理科').all()
+    count_student = len(grades)
+    data = {'C': [], 'C+': [], 'B': [], 'B+': [], 'A': [], 'A+': []}
+    for i in range(1801, 1818):
+        for key, value in data.items():
+            value.append(None)
+        work_grades = [g for g in grades if g.class_index == i]
+        for grade in work_grades:
+            if data[grade.get_this_level(count_student)][i - 1801] is None:
+                data[grade.get_this_level(count_student)][i - 1801] = 1
+            else:
+                data[grade.get_this_level(count_student)][i - 1801] += 1
+    bar = (
+        Bar(init_opts=opts.InitOpts(theme=ThemeType.VINTAGE))
+            .add_xaxis(['{}班'.format(i + 1) for i in range(17)])
+            .set_global_opts(
+            datazoom_opts=[
+                opts.DataZoomOpts(type_='slider', range_start=5, range_end=75),
+                opts.DataZoomOpts(type_='inside')
+            ],
+            yaxis_opts=opts.AxisOpts(
+                axislabel_opts=opts.LabelOpts(
+                    formatter='{value}人'
+                )
+            ),
+            title_opts=opts.TitleOpts(
+                title='学生构成分析',
+                subtitle=Level.get_level_description(),
+                subtitle_textstyle_opts=opts.TextStyleOpts(
+                    font_size=14
+                )
+            )
+        )
+    )
+    for key, value in data.items():
+        bar.add_yaxis(key, value, stack="stack1")
+    bar.set_series_opts(
+        label_opts=opts.LabelOpts(
+            position='inside'
+        )
+    )
+    return bar
+
+
+def test_high_grade_distributed(test_time: int) -> Pie:
+    grades = StudentGrade.query.filter_by(
+        test_time=test_time, subject='理科').order_by(
+        StudentGrade.total.desc()).limit(100).all()
+    data = {}
+    for i in [g.class_index for g in grades]:
+        if data.get(i):
+            data[i] += 1
+        else:
+            data[i] = 1
+    pie = (
+        Pie(init_opts=opts.InitOpts(theme=ThemeType.VINTAGE))
+            .add('', [list(z) for z in zip(data.keys(), data.values())])
+            .set_global_opts(
+            title_opts=opts.TitleOpts(
+                title='总分前 100名',
+            ),
+            legend_opts=opts.LegendOpts(
+                is_show=False
+            ),
+            tooltip_opts=opts.TooltipOpts(
+                formatter='{b}班:{c}人'
+            )
+        )
+    )
+    return pie

@@ -1,4 +1,10 @@
 from app import db
+from Level import avg2level
+
+teacher2student_grade = db.Table(
+    'teacher2student_grade',
+    db.Column('teacher_id', db.Integer, db.ForeignKey('teachers.ID'), primary_key=True),
+    db.Column('student_grade_id', db.Integer, db.ForeignKey('student_grades.ID'), primary_key=True))
 
 
 class Class(db.Model):
@@ -23,6 +29,16 @@ class Student(db.Model):
         return self.student_name
 
 
+class Teacher(db.Model):
+    __tablename__ = "teachers"
+
+    ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    teacher_name = db.Column(db.String(8))
+    subject = db.Column(db.String(8))
+    student_grades = db.relationship(
+        'StudentGrade', secondary=teacher2student_grade, backref=db.backref('teachers'))
+
+
 class Test(db.Model):
     __tablename__ = 'tests'
 
@@ -40,7 +56,7 @@ class GradeBaseNoRanking(db.Model):
     subject = db.Column(db.String(2))
 
     chinese = db.Column(db.Float)
-    match = db.Column(db.Float)
+    math = db.Column(db.Float)
     english = db.Column(db.Float)
     physics = db.Column(db.Float)
     chemistry = db.Column(db.Float)
@@ -52,7 +68,7 @@ class GradeBaseNoRanking(db.Model):
 
     def grade_dict(self):
         return {'subject': self.subject,
-                'chinese': self.chinese, 'match': self.match, 'english': self.english,
+                'chinese': self.chinese, 'math': self.math, 'english': self.english,
                 'biology': self.biology, 'physics': self.physics, 'chemistry': self.chemistry,
                 'politics': self.politics, 'history': self.history, 'geography': self.geography,
                 'total': self.total}
@@ -60,8 +76,8 @@ class GradeBaseNoRanking(db.Model):
     def set_grade(self, subject: str, grade: int or float):
         if subject == 'chinese':
             self.chinese = grade
-        elif subject == 'match':
-            self.match = grade
+        elif subject == 'math':
+            self.math = grade
         elif subject == 'english':
             self.english = grade
         elif subject == 'politics':
@@ -82,7 +98,7 @@ class GradeBaseNoRanking(db.Model):
             raise KeyError('This subject does not exist:{}'.format(subject))
 
     def __repr__(self):
-        back1 = '语文:%s 数学:%s 英语:%s ' % (str(self.chinese), str(self.match), str(self.english))
+        back1 = '语文:%s 数学:%s 英语:%s ' % (str(self.chinese), str(self.math), str(self.english))
         if self.subject == '文科':
             back2 = '政治:%s 历史:%s 地理:%s ' % (str(self.politics), str(self.history), str(self.geography))
         else:
@@ -95,7 +111,7 @@ class GradeBase(GradeBaseNoRanking):
     __abstract__ = True
 
     chinese_ranking = db.Column(db.Integer)
-    match_ranking = db.Column(db.Integer)
+    math_ranking = db.Column(db.Integer)
     english_ranking = db.Column(db.Integer)
     physics_ranking = db.Column(db.Integer)
     chemistry_ranking = db.Column(db.Integer)
@@ -108,8 +124,8 @@ class GradeBase(GradeBaseNoRanking):
     def set_ranking(self, subject: str, ranking: int):
         if subject == 'chinese':
             self.chinese_ranking = ranking
-        elif subject == 'match':
-            self.match_ranking = ranking
+        elif subject == 'math':
+            self.math_ranking = ranking
         elif subject == 'english':
             self.english_ranking = ranking
         elif subject == 'politics':
@@ -144,12 +160,12 @@ class ClassAverageGrade(GradeBase):
 
     def limit_subject(self, limit_type='best'):
         if self.subject == '文科':
-            dic = {'chinese': self.chinese_ranking, 'match': self.match_ranking, 'english': self.english_ranking,
+            dic = {'chinese': self.chinese_ranking, 'math': self.math_ranking, 'english': self.english_ranking,
                    'politics': self.politics_ranking, 'history': self.history_ranking,
                    'geography': self.geography_ranking,
                    }
         else:
-            dic = {'chinese': self.chinese_ranking, 'match': self.match_ranking, 'english': self.english_ranking,
+            dic = {'chinese': self.chinese_ranking, 'math': self.math_ranking, 'english': self.english_ranking,
                    'biology': self.biology_ranking, 'physics': self.physics_ranking,
                    'chemistry': self.chemistry_ranking,
                    }
@@ -174,10 +190,14 @@ class StudentGrade(GradeBase):
 
     def grade_dict(self):
         return {'subject': self.subject,
-                'chinese': self.chinese, 'match': self.match, 'english': self.english,
+                'chinese': self.chinese, 'math': self.math, 'english': self.english,
                 'biology': self.biology, 'physics': self.physics, 'chemistry': self.chemistry,
                 'politics': self.politics, 'history': self.history, 'geography': self.geography,
                 'total': self.total, 'ID': self.student_ID}
+
+    def get_this_level(self, total: int) -> str:
+        avg = self.total_ranking / total
+        return avg2level(avg)
 
 
 class TestHighGrade(GradeBase):
@@ -214,11 +234,4 @@ class AnalysisStudent(db.Model):
 
     def get_level(self):
         avg = self.avg
-        if 0 < avg <= 0.15:
-            return 'top'
-        elif 0.15 < avg <= 0.45:
-            return 'high'
-        elif 0.45 < avg <= 0.75:
-            return 'medium'
-        elif 0.75 < avg <= 1:
-            return 'low'
+        return avg2level(avg)

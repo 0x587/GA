@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
+{% block title %}
+    TestInfo
+{% endblock %}
 {% block app_content %}
-    <div class="row clearfix">
-        <div class="layui-col-md12">
+    <div class="layui-row">
+        <div class="layui-col-sm12">
             <script>
                 layui.use('layer', function () {
                     let layer = layui.layer;
@@ -10,7 +13,8 @@
                             title: '目录',
                             offset: 'r',
                             shade: 0,
-                            btn: '',
+                            btn: '关闭',
+                            btnAlign: 'c',
                             area: '11.5%',
                             content:
                                 '<ul class="site-dir layui-layer-wrap" style="display: block;">\n' +
@@ -20,6 +24,8 @@
                                 '</span><cite> 分数分布</cite></a></li>\n' +
                                 '  <li><a href="#compare"><span class="layui-badge-dot layui-bg-black">' +
                                 '</span><cite> 各班均分对比</cite></a></li>\n' +
+                                '<li><a href="#student-distributed"><span class="layui-badge-dot layui-bg-black">' +
+                                '</span><cite> 各班学生构成分析</cite></a></li>\n' +
                                 '</ul>',
                         }
                     )
@@ -52,9 +58,9 @@
                         , size: 'sm'
                         , even: true
                         , cols: [[
-                            {field: 'key', title: ''},
+                            {field: 'key', title: '', fixed: 'left'},
                             {field: 'chinese', title: '语文'},
-                            {field: 'match', title: '数学'},
+                            {field: 'math', title: '数学'},
                             {field: 'english', title: '英语'},
                             {field: 'physics', title: '物理'},
                             {field: 'chemistry', title: '化学'},
@@ -83,9 +89,9 @@
                         , size: 'sm'
                         , even: true
                         , cols: [[
-                            {field: 'key', title: ''},
+                            {field: 'key', title: '', fixed: 'left'},
                             {field: 'chinese', title: '语文人数'},
-                            {field: 'match', title: '数学人数'},
+                            {field: 'math', title: '数学人数'},
                             {field: 'english', title: '英语人数'},
                             {field: 'physics', title: '物理人数'},
                             {field: 'chemistry', title: '化学人数'},
@@ -124,7 +130,7 @@
                 //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
                 layui.use('element', function () {
                     let element = layui.element;
-                    const subjects = ['chinese', 'match', 'english', 'physics', 'chemistry', 'biology'];
+                    const subjects = ['chinese', 'math', 'english', 'physics', 'chemistry', 'biology'];
                     for (let i = 0; i < subjects.length; i++) {
                         element.tabAdd('compare', {
                             title: subjects[i]
@@ -162,6 +168,52 @@
                     });
                     element.tabChange('compare', 'chinese');
                 });
+            </script>
+            <blockquote class="layui-elem-quote" id="student-distributed">各班学生构成分析</blockquote>
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-box" id="test-student-distributed-chart"
+                         style="width: 100%;height: 500px"></div>
+                    <hr class="layui-bg-gray">
+                    <div class="layui-box" id="test-high-grade-distributed-chart"
+                         style="width: 100%;height: 500px"></div>
+                </div>
+            </div>
+            <script>
+                $(
+                    function () {
+                        let chart = echarts.init(
+                            document.getElementById('test-student-distributed-chart'), '{{ theme }}', {renderer: 'canvas'});
+                        $.ajax({
+                            type: "GET",
+                            url: '/charts/test_student_distributed_chart/{{test.test_time}}',
+                            dataType: 'json',
+                            success: function (result) {
+                                chart.setOption(result);
+                            }
+                        });
+                        $(window).resize(function () {
+                            chart.resize();
+                        });
+                    }
+                );
+                $(
+                    function () {
+                        let chart = echarts.init(
+                            document.getElementById('test-high-grade-distributed-chart'), '{{ theme }}', {renderer: 'canvas'});
+                        $.ajax({
+                            type: "GET",
+                            url: '/charts/test_high_grade_distributed_chart/{{test.test_time}}',
+                            dataType: 'json',
+                            success: function (result) {
+                                chart.setOption(result);
+                            }
+                        });
+                        $(window).resize(function () {
+                            chart.resize();
+                        });
+                    }
+                )
             </script>
         </div>
     </div>

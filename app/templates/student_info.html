@@ -3,176 +3,242 @@
     StudentInfo
 {% endblock %}
 {% block app_content %}
-    <div class="row clearfix">
-        <div class="col-md-3 column">
-            <div class="layui-anim layui-anim-upbit">
-                <div class="jumbotron">
-                    <img src="/static/user.jpg" class="img-circle" width="100%">
-                    <dl>
-                        {% for info in infos %}
-                            <dt>
-                                {{ info.key }}
-                            </dt>
-                            <dd>
-                                {{ info.value }}
-                            </dd>
-                        {% endfor %}
-                    </dl>
+    <div class="layui-row">
+        <div class="layui-col-space8">
+            <div class="layui-col-sm3">
+                <div class="layui-anim layui-anim-upbit">
+                    <div class="jumbotron">
+                        <img src="../static/user.jpg" class="img-circle" width="100%">
+                        <dl>
+                            {% for info in infos %}
+                                <dt>
+                                    {{ info.key }}
+                                </dt>
+                                <dd>
+                                    {{ info.value }}
+                                </dd>
+                            {% endfor %}
+                        </dl>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-9 column">
-            <div class="layui-anim layui-anim-scale">
-                <div class="jumbotron">
-                    <h1>
-                        Hello, world!
-                    </h1>
-                    <p>
-                        This is a template for a simple marketing or informational website. It includes a large callout
-                        called the hero unit and three supporting pieces of content. Use it as a starting point to
-                        create
-                        something more unique.
-                    </p>
-                    <p>
-                        <a class="btn btn-primary btn-large" href="#first-semester">Learn more</a>
-                    </p>
+            <div class="layui-col-sm9">
+                <div class="layui-anim layui-anim-scale">
+                    <div class="jumbotron">
+                        <h1>
+                            Something else.
+                        </h1>
+                        <p>
+                            Something else.
+                        </p>
+                        <p>
+                            <a class="btn btn-primary btn-large" href="#first-semester">Learn more</a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row clearfix">
-        <div class="layui-anim layui-anim-scale">
-            <div class="col-md-12 column">
-                {% for semester_name,semesters in semesters.items() %}
-                    <a id="{{ 'first-semester' if semester_name=='高一上学期' else '' }}"
-                       class="semester-{{ semester_name }}">
-                        <h2>
-                            <strong>{{ semester_name }}</strong>
-                        </h2>
-                    </a>
-                    <script>
-                        layui.use('layer', function () {
-                            let $ = layui.jquery, layer = layui.layer;
-                            $('.semester-{{ semester_name }}').on('click', function () {
-                                layer.open({
-                                    type: 1,
-                                    area: ['auto', '100px'],
-                                    content: '<a type="button" class="layui-btn layui-btn-radius" href="/test_info/{{semesters[0].test_time}}"' +
-                                        '>{{semesters[0].test_name}}</a>\n' +
-                                        '<a type="button" class="layui-btn layui-btn-radius" href="/test_info/{{semesters[1].test_time}}"' +
-                                        '>{{semesters[1].test_name}}</a>\n' +
-                                        '<a type="button" class="layui-btn layui-btn-radius" href="/test_info/{{semesters[2].test_time}}"' +
-                                        '>{{semesters[2].test_name}}</a>',
-                                    btnAlign: 'c', //按钮居中
-                                    shade: 0.2,
-                                    yes: function () {
-                                        layer.closeAll();
-                                    }
-                                });
+    {#排名走势#}
+    <div class="layui-row">
+        <blockquote class="layui-elem-quote" id="compare">各班均分对比</blockquote>
+        <div class="layui-tab layui-tab-brief" lay-filter="compare">
+            <ul class="layui-tab-title">
+            </ul>
+            <div class="layui-tab-content">
+            </div>
+        </div>
+        <script>
+            //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
+            layui.use('element', function () {
+                let element = layui.element;
+                const subjects = ['chinese', 'math', 'english', 'physics', 'chemistry', 'biology'];
+                const subjects_zh = ['语文', '数学', '英语', '物理', '化学', '生物'];
+                for (let i = 0; i < subjects.length; i++) {
+                    element.tabAdd('compare', {
+                        title: subjects[i]
+                        , content: '<div class="layui-box" style="width: 100%;height: 500px" ' +
+                            'id="compare-subject"></div>'.replace('subject', subjects[i]) //支持传入html
+                        , id: subjects[i]
+                    })
+                }
+                let charts;
+                charts = [];
+                $(
+                    function () {
+                        for (let i = 0; i < subjects.length; i++) {
+                            charts[i] = echarts.init(
+                                document.getElementById('compare-subject'.replace('subject', subjects[i])),
+                                '{{ theme }}', {renderer: 'canvas'}
+                            )
+                        }
+                        $.ajax({
+                            type: "GET",
+                            url: '/charts/student_history_ranking/{{student_id}}',
+                            dataType: 'json',
+                            success: function (result) {
+                                for (let i = 0; i < subjects.length; i++) {
+                                    charts[i].setOption(result[subjects[i]])
+                                }
+                            }
+                        });
+                    }
+                );
+                element.on('tab(compare)', function (data) {
+                    console.log(data.index); //得到当前Tab的所在下标
+                    charts[data.index].resize();
+                });
+                element.tabChange('compare', 'chinese');
+            });
+        </script>
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-sm12 layui-anim layui-anim-scale">
+            <script>
+                let tabData = {};
+            </script>
+            {% for semester_name,grades in semesters.items() %}
+                <a id="{{ 'first-semester' if semester_name=='高一上学期' else '' }}"
+                   class="semester-{{ semester_name }}">
+                    <blockquote class="layui-elem-quote">
+                        <strong>
+                            {{ semester_name }}
+                        </strong>
+                    </blockquote>
+                </a>
+                <script>
+                    layui.use('layer', function () {
+                        let $ = layui.jquery, layer = layui.layer;
+                        $('.semester-{{ semester_name }}').on('click', function () {
+                            layer.open({
+                                type: 1,
+                                area: ['auto', '100px'],
+                                content: '<a type="button" class="layui-btn layui-btn-radius" href="/test_info/{{grades[0].test_time}}"' +
+                                    '>{{grades[0].test_name}}</a>\n' +
+                                    '<a type="button" class="layui-btn layui-btn-radius" href="/test_info/{{grades[1].test_time}}"' +
+                                    '>{{grades[1].test_name}}</a>\n' +
+                                    '<a type="button" class="layui-btn layui-btn-radius" href="/test_info/{{grades[2].test_time}}"' +
+                                    '>{{grades[2].test_name}}</a>',
+                                btnAlign: 'c', //按钮居中
+                                shade: 0.2,
+                                yes: function () {
+                                    layer.closeAll();
+                                }
                             });
                         });
-                    </script>
-                    <ul class="nav nav-tabs">
-                        {% for semester in semesters %}
-                            <li class="{{ 'active'if semester.is_show else '' }}">
-                                <a href="#panel-{{ semester_name }}-{{ semester.index }}"
-                                   data-toggle="tab">{{ semester.test_name }}</a>
-                            </li>
+                    });
+                </script>
+                <div class="layui-tab layui-tab-brief" lay-filter="{{ semester_name }}">
+                    <ul class="layui-tab-title">
+                        {% for grade in grades %}
+                            <li lay-id="{{ grade.test_name }}"
+                                data-g_id="{{ grade.grade_id }}">{{ grade.test_name }}</li>
                         {% endfor %}
                     </ul>
-                    <div class="tab-content">
-                        {% for semester in semesters %}
-                            <div class="tab-pane {{ 'active'if semester.is_show else '' }}"
-                                 id="panel-{{ semester_name }}-{{ semester.index }}">
-                                <table class="layui-hide" id="grade_analysis_table_{{ semester.index }}"></table>
-                                <div class="col-md-7 column">
-                                    <div id="grade_compared_chart-{{ semester.index }}"
-                                         style="width: 115%; height:430px;
+                    <div class="layui-tab-content">
+                        {% for grade in grades %}
+                            <div class="layui-tab-item">
+                                <table class="layui-hide"
+                                       id="grade_table_{{ grade.grade_id }}"></table>
+                                <div class="layui-row">
+                                    <div class="layui-col-sm7">
+                                        <div id="grade_compared_chart-{{ grade.grade_id }}"
+                                             style="width: 115%; height:430px;
                                      margin-left: -10%;margin-right: 5%;
                                  "></div>
-                                </div>
-                                <div class="col-md-5 column">
-                                    <div id="ranking_radar_chart-{{ semester.index }}"
-                                         style="width: 125%;height:430px;
+                                    </div>
+                                    <div class="layui-col-sm5">
+                                        <div id="ranking_radar_chart-{{ grade.grade_id }}"
+                                             style="width: 125%;height:430px;
                                      margin-left: -10%;margin-right: 15%;
                                  "></div>
+                                    </div>
                                 </div>
-                                {#TODO:转用Layui Tab#}
-                                <script>
-                                    layui.use('table', function () {
-                                        const table = layui.table;
-                                        table.render({
-                                            elem: '#grade_analysis_table_{{ semester.index }}'
-                                            , url: '/api/student/grade/analysis/{{ semester.grade_id }}'
-                                            , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                                            , size: 'sm'
-                                            , cols: [[
-                                                {field: 'key', title: ''},
-                                                {field: 'chinese', title: '语文'},
-                                                {field: 'match', title: '数学'},
-                                                {field: 'english', title: '英语'},
-                                                {field: 'physics', title: '物理'},
-                                                {field: 'chemistry', title: '化学'},
-                                                {field: 'biology', title: '生物'},
-                                                {field: 'total', title: '总分'}
-                                            ]]
-                                        });
-                                    });
-                                </script>
-                                <script>
-                                    $(
-                                        function () {
-                                            var chart = echarts.init(
-                                                document.getElementById('grade_compared_chart-{{ semester.index }}'), '{{ theme }}', {renderer: 'canvas'});
-                                            $.ajax({
-                                                type: "GET",
-                                                url: "/charts/grade_compared_chart/{{ semester.grade_id }}",
-                                                dataType: 'json',
-                                                success: function (result) {
-                                                    chart.setOption(result);
-                                                }
-                                            });
-                                            $(window).resize(function () {
-                                                chart.resize();
-                                            });
-                                            $('a').click(function () {
-                                                setTimeout(function () {
-                                                    chart.resize();
-                                                }, 0)
-                                            });
-                                        }
-                                    )
-                                </script>
-                                <script>
-                                    $(
-                                        function () {
-                                            const chart = echarts.init(
-                                                document.getElementById('ranking_radar_chart-{{ semester.index }}'), '{{ theme }}', {renderer: 'canvas'});
-                                            $.ajax({
-                                                type: "GET",
-                                                url: "/charts/ranking_radar_chart/{{ semester.grade_id }}",
-                                                dataType: 'json',
-                                                success: function (result) {
-                                                    chart.setOption(result);
-                                                }
-                                            });
-                                            $(window).resize(function () {
-                                                chart.resize();
-                                            });
-                                            $('a').click(function () {
-                                                setTimeout(function () {
-                                                    chart.resize();
-                                                }, 0)
-                                            });
-                                        }
-                                    )
-                                </script>
                             </div>
                         {% endfor %}
                     </div>
-                {% endfor %}
-            </div>
+                </div>
+                <script>
+                    layui.use('element', function () {
+                        let element = layui.element;
+                        {% for grade in grades %}
+                            tabData['{{ grade.grade_id }}'] = {
+                                'radar': {'data': null, 'load': false},
+                                'compare': {'data': null, 'load': false},
+                                'table': {'data': null, 'load': false}
+                            };
+                        {% endfor %}
+                        element.on('tab({{ semester_name }})', function () {
+                            let gradeID = this.getAttribute('data-g_id');
+                            if (!tabData[gradeID]['table']['load']) {
+                                layui.use('table', function () {
+                                    const table = layui.table;
+                                    table.render({
+                                        elem: '#grade_table_' + gradeID
+                                        , url: '/api/student/grade/analysis/' + gradeID
+                                        , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                        , size: 'sm'
+                                        , cols: [[
+                                            {field: 'key', title: '', fixed: 'left'},
+                                            {field: 'chinese', title: '语文'},
+                                            {field: 'math', title: '数学'},
+                                            {field: 'english', title: '英语'},
+                                            {field: 'physics', title: '物理'},
+                                            {field: 'chemistry', title: '化学'},
+                                            {field: 'biology', title: '生物'},
+                                            {field: 'total', title: '总分'}
+                                        ]]
+                                    });
+                                });
+                                tabData[gradeID]['table']['load'] = true;
+                            }
+                            if (!tabData[gradeID]['radar']['load']) {
+                                $(
+                                    function () {
+                                        let chart = echarts.init(
+                                            document.getElementById('ranking_radar_chart-' + gradeID),
+                                            '{{ theme }}', {renderer: 'canvas'});
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "/charts/ranking_radar_chart/" + gradeID,
+                                            dataType: 'json',
+                                            success: function (result) {
+                                                chart.setOption(result);
+                                            }
+                                        });
+                                        $(window).resize(function () {
+                                            chart.resize();
+                                        });
+                                    }
+                                );
+                                tabData[gradeID]['radar']['load'] = true;
+                            }
+                            if (!tabData[gradeID]['compare']['load']) {
+                                $(
+                                    function () {
+                                        let chart = echarts.init(
+                                            document.getElementById('grade_compared_chart-' + gradeID),
+                                            '{{ theme }}', {renderer: 'canvas'});
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "/charts/grade_compared_chart/" + gradeID,
+                                            dataType: 'json',
+                                            success: function (result) {
+                                                chart.setOption(result);
+                                            }
+                                        });
+                                        $(window).resize(function () {
+                                            chart.resize();
+                                        });
+                                    }
+                                );
+                                tabData[gradeID]['compare']['load'] = true;
+                            }
+                        });
+                        element.tabChange('{{ semester_name }}', '月考');
+                    });
+                </script>
+            {% endfor %}
         </div>
-    </div>
     </div>
 {% endblock %}

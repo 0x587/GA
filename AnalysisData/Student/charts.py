@@ -65,9 +65,9 @@ def student_grade_compared(student_grade: StudentGrade) -> Bar:
     bar = (
         Bar(init_opts=opts.InitOpts(theme=ThemeType.VINTAGE))
             .add_xaxis(subjects)
-            .add_yaxis('student_grade', data['student_grade'])
-            .add_yaxis('average_grade', data['average_grade'])
-            .add_yaxis('high_grade', data['high_grade'])
+            .add_yaxis('本次成绩', data['student_grade'])
+            .add_yaxis('平均分', data['average_grade'])
+            .add_yaxis('高分线', data['high_grade'])
             .set_global_opts(title_opts=opts.TitleOpts('成绩对比图'))
     )
     return bar

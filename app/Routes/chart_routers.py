@@ -1,10 +1,20 @@
 from app import app
 from AnalysisData.Class import class_history_grade, class_grade_distributed
-from AnalysisData.Student.charts import student_grade_radar, student_grade_compared
+from AnalysisData.Student.charts import student_grade_radar, student_grade_compared, student_history_ranking
 from AnalysisData.Test import test_grade_distributed_chart, test_avg_grade_compare, \
     test_student_distributed, test_high_grade_distributed
 from app.models import *
 import json
+
+
+@app.route('/charts/student_history_ranking/<int:student_id>')
+def student_history_ranking_chart(student_id: int):
+    print(student_id)
+    data = student_history_ranking(student_id)
+    result = {}
+    for key, value in data.items():
+        result[key] = json.loads(value.dump_options())
+    return json.dumps(result)
 
 
 @app.route('/charts/history_grade_chart/<int:class_index>')

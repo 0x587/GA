@@ -26,14 +26,10 @@
                 <div class="layui-anim layui-anim-scale">
                     <div class="jumbotron">
                         <h1>
-                            Hello, world!
+                            Something else.
                         </h1>
                         <p>
-                            This is a template for a simple marketing or informational website. It includes a large
-                            callout
-                            called the hero unit and three supporting pieces of content. Use it as a starting point to
-                            create
-                            something more unique.
+                            Something else.
                         </p>
                         <p>
                             <a class="btn btn-primary btn-large" href="#first-semester">Learn more</a>
@@ -42,6 +38,58 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="layui-row">
+        <blockquote class="layui-elem-quote" id="compare">各班均分对比</blockquote>
+        <div class="layui-tab layui-tab-brief" lay-filter="compare">
+            <ul class="layui-tab-title">
+            </ul>
+            <div class="layui-tab-content">
+            </div>
+        </div>
+        <script>
+            //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
+            layui.use('element', function () {
+                let element = layui.element;
+                const subjects = ['chinese', 'math', 'english', 'physics', 'chemistry', 'biology'];
+                for (let i = 0; i < subjects.length; i++) {
+                    element.tabAdd('compare', {
+                        title: subjects[i]
+                        , content: '<div class="layui-box" style="width: 100%;height: 500px" ' +
+                            'id="compare-subject"></div>'.replace('subject', subjects[i]) //支持传入html
+                        , id: subjects[i]
+                    })
+                }
+                let charts;
+                charts = [];
+                $(
+                    function () {
+
+                        for (let i = 0; i < subjects.length; i++) {
+                            charts[i] = echarts.init(
+                                document.getElementById('compare-subject'.replace('subject', subjects[i])),
+                                '{{ theme }}', {renderer: 'canvas'}
+                            )
+                        }
+                        $.ajax({
+                            type: "GET",
+                            url: '/charts/student_history_ranking/{{student_id}}',
+                            dataType: 'json',
+                            success: function (result) {
+                                for (let i = 0; i < subjects.length; i++) {
+                                    charts[i].setOption(result[subjects[i]])
+                                }
+                            }
+                        });
+                    }
+                );
+                element.on('tab(compare)', function (data) {
+                    console.log(data.index); //得到当前Tab的所在下标
+                    charts[data.index].resize();
+                });
+                element.tabChange('compare', 'chinese');
+            });
+        </script>
     </div>
     <div class="layui-row">
         <div class="layui-col-sm12 layui-anim layui-anim-scale">

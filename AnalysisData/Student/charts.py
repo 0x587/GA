@@ -121,3 +121,34 @@ def student_grade_radar(student_grade: StudentGrade) -> Radar:
                  tooltip_opts=opts.TooltipOpts(is_show=False))
     )
     return radar
+
+
+def student_history_ranking(student_id: int) -> dict:
+    result = {}
+    result_chart = {}
+    grades = StudentGrade.query.filter_by(
+        student_ID=student_id, subject='理科').order_by(StudentGrade.test_time).all()
+    test_names = [t.test_name for t in Test.query.order_by(Test.test_time).all()]
+    print(test_names)
+    for subject in Subject.li_all_subject():
+        result[subject] = []
+        for grade in grades:
+            grade: StudentGrade
+            result[subject].append(grade.__dict__[subject + '_ranking'])
+    for subject in Subject.li_all_subject():
+        line = (
+            Line()
+                .add_xaxis(test_names)
+                .add_yaxis(
+                '排名',
+                result[subject],
+                markline_opts=opts.MarkLineOpts(data=[opts.MarkLineItem(type_="average")]), )
+                .set_global_opts(
+                title_opts=opts.TitleOpts(
+                    title=Subject.en2cn(subject) + '科历次成绩走势',
+                    subtitle='虚线为平均排名'
+                ),
+            )
+        )
+        result_chart[subject] = line
+    return result_chart

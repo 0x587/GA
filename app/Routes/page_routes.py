@@ -99,6 +99,7 @@ def student_info(student_id):
                                {'key': 'ClassIndex', 'value': student.class_index}
                            ],
                            semesters=grades,
+                           student_id=student_id,
                            )
 
 
